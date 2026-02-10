@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SplashScreen(
-                onFinish = { print("terminado") }
+                onContinue = { print("terminado") }
             )
         }
     }
