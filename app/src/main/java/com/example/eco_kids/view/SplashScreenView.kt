@@ -31,7 +31,7 @@ fun SplashScreen(onFinish: () -> Unit) {
                 durationMillis = 800,
                 easing = FastOutSlowInEasing
             )
-        )
+        )a
         delay(500)
         onFinish()
     }
