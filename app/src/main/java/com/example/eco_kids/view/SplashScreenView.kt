@@ -42,7 +42,6 @@ fun SplashScreen(onContinue: () -> Unit) {
             1f,
             animationSpec = tween(500)
         )
-        enabled = true
     }
 
     //Logo
@@ -73,11 +72,15 @@ fun SplashScreen(onContinue: () -> Unit) {
                 easing = FastOutSlowInEasing
             )
         )
+        enabled = true
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
-            .clickable { onContinue() },
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(enabled = enabled) {
+                onContinue()
+            },
         contentAlignment = Alignment.Center
     ) {
 

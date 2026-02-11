@@ -4,6 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.eco_kids.view.NameScreen
 import com.example.eco_kids.view.SplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -11,9 +17,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SplashScreen(
-                onContinue = { print("terminado") }
-            )
+            MaterialTheme {
+                AppNavigation()
+            }
+        }
+
+    }
+
+    @Composable
+    fun AppNavigation() {
+        val navController = rememberNavController()
+
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Splash.route
+        ) {
+
+            composable(Screen.Splash.route) {
+                SplashScreen(
+                    onContinue = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Splash.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.Home.route) {
+                NameScreen()
+            }
         }
     }
+
 }
