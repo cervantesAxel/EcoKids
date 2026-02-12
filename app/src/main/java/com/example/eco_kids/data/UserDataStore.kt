@@ -35,6 +35,10 @@ class UserDataStore (private val context: Context){
             preferences[USER_PET_KEY] = pet
         }
     }
+
+    fun getUser (){
+
+    }
 }
 
 

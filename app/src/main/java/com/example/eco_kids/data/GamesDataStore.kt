@@ -1,28 +1,44 @@
 package com.example.eco_kids.data
 
-import android.R
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.eco_kids.data.UserDataStore.Companion.USER_NAME_KEY
-import com.example.eco_kids.data.UserDataStore.Companion.USER_PET_KEY
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 val Context.gamesDataStore by preferencesDataStore(name = "games_preferences")
 
 
 class GamesDataStore (private val context: Context) {
-    //llaves aqui
-    companion object {
-        val MEMORAMA_SCORE_KEY = intPreferencesKey("memorama_score")
-        val RECOLECTOR_SCORE_KEY = intPreferencesKey("recolector_score")
-    }
 
-    suspend fun saveScoreMemorama(score: int) {
-        context.userDataStore.edit { preferences ->
-            preferences[MEMORAMA_SCORE_KEY] = score
+    //funcion para guardar puntaje
+    suspend fun saveScore (userName: String,
+                           gameName: String,
+                           score:Int){
+        //llave dinámica para poder usar por usuario
+        val key = intPreferencesKey("${gameName}_score_$userName")
+
+        context.gamesDataStore.edit { preferences ->
+            val currentScore = preferences[key] ?: 0
+
+            if (score > currentScore){
+            preferences[key] = score
+            }
         }
     }
+
+    fun getBestScore (
+        userName: String,
+        gameName: String
+    ): Flow<Int>{
+        //se obtiene la llave de la misma manera (dinamica)
+        val key = intPreferencesKey("${gameName}_score_$userName")
+
+        return context.gamesDataStore.data.map { preferences ->
+            preferences[key] ?: 0
+        }
+    }
+
 
 }
