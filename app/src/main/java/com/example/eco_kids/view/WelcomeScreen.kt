@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,14 +18,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eco_kids.R
 import com.example.eco_kids.ui.theme.CurvedTopShape
+import com.example.eco_kids.ui.partials.TextField
 
+@Preview
 @Composable
-fun NameScreen() {
+fun WelcomeScreen() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -53,6 +54,12 @@ fun NameScreen() {
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
+                    .padding(
+                        start = 0.dp,
+                        top = 20.dp,
+                        end = 0.dp,
+                        bottom = 20.dp
+                    )
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -64,6 +71,42 @@ fun NameScreen() {
                         fontSize = 30.sp,
                         fontWeight = FontWeight.ExtraBold,
                     )
+                }
+                HorizontalDivider(
+                    color = Color(0xFF01586C),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "¿Cuál es tu nombre?",
+                        color = Color(0xFF01586C),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(top = 15.dp)
+                    )
+                }
+                TextField("Escribe tu nombre")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Elige tu mascota:",
+                        color = Color(0xFF01586C),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(top = 22.dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
                 }
             }
         }
