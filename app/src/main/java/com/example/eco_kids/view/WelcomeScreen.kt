@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +27,14 @@ import androidx.compose.ui.unit.sp
 import com.example.eco_kids.R
 import com.example.eco_kids.ui.theme.CurvedTopShape
 import com.example.eco_kids.ui.partials.TextField
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.eco_kids.ui.partials.MascotaCarousel
+import com.example.eco_kids.viewmodel.WelcomeViewModel
 
-@Preview
 @Composable
 fun WelcomeScreen() {
+    val welcomeViewModel: WelcomeViewModel = viewModel()
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -106,9 +113,31 @@ fun WelcomeScreen() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
+                    MascotaCarousel(viewModel = welcomeViewModel)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        modifier = Modifier.height(40.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        onClick = {
 
+                        }
+                    ) {
+                        Text(text = "Continuar")
+                    }
                 }
             }
         }
     }
 }
+
+@Preview
+@Composable
+fun Preview() {
+    WelcomeScreen()
+}
+
