@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.remote.creation.core)
+    val nav_version = "2.9.7"
 
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.9.7")

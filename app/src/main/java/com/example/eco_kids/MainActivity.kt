@@ -9,6 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+// Asegúrate de que estos imports coincidan con tus carpetas reales
+import com.example.eco_kids.view.GameScreen
+import com.example.eco_kids.view.NameScreen
 import com.example.eco_kids.view.SplashScreen
 import com.example.eco_kids.view.WelcomeScreen
 
@@ -18,37 +21,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
-                AppNavigation()
-            }
-        }
 
-    }
-
-    @Composable
-    fun AppNavigation() {
-        val navController = rememberNavController()
-
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Splash.route
-        ) {
-
-            composable(Screen.Splash.route) {
-                SplashScreen(
-                    onContinue = {
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Splash.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                )
-            }
-
-            composable(Screen.Home.route) {
-                WelcomeScreen()
             }
         }
     }
-
 }
