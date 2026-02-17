@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.eco_kids.view.NameScreen
 import com.example.eco_kids.view.SplashScreen
+import com.example.eco_kids.view.WelcomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
             }
 
             composable(Screen.Home.route) {
-                NameScreen()
+                WelcomeScreen()
             }
         }
     }
