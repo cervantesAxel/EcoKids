@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eco_kids.view.GameScreen
 import com.example.eco_kids.view.NameScreen
 import com.example.eco_kids.view.SplashScreen
+import com.example.eco_kids.view.WelcomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
