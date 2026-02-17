@@ -44,8 +44,7 @@ class MemoramaViewModel (
                 score= score
             )
 
-            val newScore =
-                gamesDataStore.getBestScore(userName, "memorama")
+            val newScore = gamesDataStore.getBestScore(userName, "memorama")
                     .firstOrNull() ?: 0
         }
     }

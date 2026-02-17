@@ -15,9 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eco_kids.data.GamesDataStore
 import com.example.eco_kids.data.UserDataStore
+import com.example.eco_kids.view.GamesScreen
 import com.example.eco_kids.view.NameScreen
 import com.example.eco_kids.view.SplashScreen
-import com.example.eco_kids.view.TestScreen
 import com.example.eco_kids.viewmodel.MemoramaViewModel
 import com.example.eco_kids.viewmodel.UserViewModel
 
@@ -43,20 +43,34 @@ class MainActivity : ComponentActivity() {
         ) {
 
             composable(Screen.Splash.route) {
+                val userViewModel: UserViewModel = viewModel()
                 SplashScreen(
-                    onContinue = {
+                    onContinueRegister = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Splash.route) {
                                 inclusive = true
                             }
                         }
-                    }
+                    },
+                    onContinueGames = {
+                        navController.navigate(Screen.Games.route) {
+                            popUpTo(Screen.Splash.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    userViewModel= userViewModel
                 )
             }
 
             composable(Screen.Home.route) {
                 NameScreen()
             }
+
+            composable (Screen.Games.route) {
+                GamesScreen()
+            }
+
         }
     }
 

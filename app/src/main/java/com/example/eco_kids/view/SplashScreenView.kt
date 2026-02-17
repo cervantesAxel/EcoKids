@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,13 +28,18 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.eco_kids.viewmodel.UserViewModel
 
 //Pantalla inicial
 @Composable
-fun SplashScreen(onContinue: () -> Unit) {
+fun SplashScreen(onContinueRegister: () -> Unit,
+                 userViewModel: UserViewModel,
+                 onContinueGames: () -> Unit) {
     val scale = remember { Animatable(0.6f) } //Logo
     val textAlpha = remember { Animatable(0f) } //Texto
     var enabled by remember { mutableStateOf(false) }
+    val name by userViewModel.userName.collectAsState(initial = null)
+    val pet by userViewModel.userPet.collectAsState(initial = null)
 
     //Texto
     LaunchedEffect(Unit) {
@@ -79,7 +85,12 @@ fun SplashScreen(onContinue: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .clickable(enabled = enabled) {
-                onContinue()
+                if (!name.isNullOrEmpty() && !pet.isNullOrEmpty()){
+                    onContinueGames()
+                } else{
+                    onContinueRegister()
+                }
+
             },
         contentAlignment = Alignment.Center
     ) {
