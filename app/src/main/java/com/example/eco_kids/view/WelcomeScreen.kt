@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,14 +54,15 @@ fun WelcomeScreen() {
                     start = 36.dp,
                     top = 175.dp,
                     end = 36.dp,
-                    bottom = 280.dp
+                    bottom = 250.dp
                 )
                 .clip(CurvedTopShape)
                 .background(Color(0xFFFEFBE8))
                 .align(Alignment.Center)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(
                         start = 0.dp,
                         top = 20.dp,
@@ -96,7 +98,11 @@ fun WelcomeScreen() {
                         modifier = Modifier.padding(top = 15.dp)
                     )
                 }
-                TextField("Escribe tu nombre")
+                TextField(
+                    value = welcomeViewModel.nombre,
+                    onValueChange = { welcomeViewModel.onNombreChange(it) },
+                    placeholder = "Escribe tu nombre"
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -120,11 +126,16 @@ fun WelcomeScreen() {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        modifier = Modifier.height(40.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier
+                            .height(40.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 40.dp),
                         shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF6CB808)
+                        ),
                         onClick = {
-
+                            println(welcomeViewModel.nombre)
                         }
                     ) {
                         Text(text = "Continuar")
