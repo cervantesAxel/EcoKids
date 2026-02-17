@@ -17,7 +17,7 @@ class UserViewModel(
     val userName = userDataStore.userName
     val userPet = userDataStore.userPet
 
-    fun saveUser (name:String, pet:String){
+    fun saveUser (name:String, pet: Int){
         viewModelScope.launch {
             userDataStore.saveUser(name, pet)
         }

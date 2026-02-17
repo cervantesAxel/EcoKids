@@ -32,14 +32,16 @@ import com.example.eco_kids.viewmodel.UserViewModel
 
 //Pantalla inicial
 @Composable
-fun SplashScreen(onContinueRegister: () -> Unit,
-                 userViewModel: UserViewModel,
+fun SplashScreen(userViewModel: UserViewModel,
+                 onContinueRegister: () -> Unit,
                  onContinueGames: () -> Unit) {
     val scale = remember { Animatable(0.6f) } //Logo
     val textAlpha = remember { Animatable(0f) } //Texto
     var enabled by remember { mutableStateOf(false) }
     val name by userViewModel.userName.collectAsState(initial = null)
     val pet by userViewModel.userPet.collectAsState(initial = null)
+
+    // para pruebas ->> userViewModel.saveUser("Iris","panda")
 
     //Texto
     LaunchedEffect(Unit) {
@@ -85,7 +87,7 @@ fun SplashScreen(onContinueRegister: () -> Unit,
         modifier = Modifier
             .fillMaxSize()
             .clickable(enabled = enabled) {
-                if (!name.isNullOrEmpty() && !pet.isNullOrEmpty()){
+                if (!name.isNullOrEmpty() && pet != null){
                     onContinueGames()
                 } else{
                     onContinueRegister()

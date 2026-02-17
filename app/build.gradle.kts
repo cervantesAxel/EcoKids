@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Preferences DataStore
+    implementation(libs.androidx.datastore.preferences)
+
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.9.7")
 
