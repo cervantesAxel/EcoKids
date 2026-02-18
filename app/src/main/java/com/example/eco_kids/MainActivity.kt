@@ -17,7 +17,6 @@ import com.example.eco_kids.view.WelcomeScreen
 import com.example.eco_kids.viewmodel.UserViewModel
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,11 +25,8 @@ class MainActivity : ComponentActivity() {
                 AppNavigation()
             }
         }
-    }
-}
 
-@Composable
-fun AppNavigation() {
+    }
 
     @Composable
     fun AppNavigation() {
@@ -59,9 +55,8 @@ fun AppNavigation() {
                             }
                         }
                     }
-                }
-            )
-        }
+                )
+            }
 
             composable(Screen.Home.route) {
                 WelcomeScreen(
@@ -89,9 +84,6 @@ fun AppNavigation() {
 
 
         }
-
-        composable(Screen.GameScreen.route) {
-            GameScreenView()
-        }
     }
+
 }
