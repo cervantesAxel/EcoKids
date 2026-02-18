@@ -10,8 +10,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.eco_kids.view.GameScreen
 import com.example.eco_kids.view.GamesScreen
+import com.example.eco_kids.view.MemoramaScreen
 import com.example.eco_kids.view.SplashScreen
 import com.example.eco_kids.view.WelcomeScreen
 import com.example.eco_kids.viewmodel.UserViewModel
@@ -73,13 +73,20 @@ class MainActivity : ComponentActivity() {
             composable (Screen.Games.route){
                 val userViewModel: UserViewModel = viewModel()
 
-                GamesScreen(navController = navController, userViewModel = userViewModel)
+                GamesScreen(navController = navController,
+                    userViewModel = userViewModel)
             }
 
             composable (Screen.Memorama.route) {
-                GameScreen(
-                    navController = navController
-                )
+                MemoramaScreen(
+                     onGoToGames = {
+                         navController.navigate(Screen.Games.route){
+                             popUpTo(Screen.Games.route){
+                                 inclusive = true
+                             }
+                         }
+                     }
+                 )
             }
 
 

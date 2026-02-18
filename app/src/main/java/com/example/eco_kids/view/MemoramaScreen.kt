@@ -1,6 +1,5 @@
 package com.example.eco_kids.view
 
-import android.net.wifi.hotspot2.pps.HomeSp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
@@ -34,11 +32,11 @@ import com.example.eco_kids.model.MemoryCard
 import com.example.eco_kids.viewmodel.GameViewModel
 
 @Composable
-fun GameScreen(navController: NavController,
+fun MemoramaScreen(onGoToGames: () -> Unit,
                viewModel: GameViewModel = viewModel()) {
 
     if (viewModel.showVictoryDialog) {
-        VictoryDialog(viewModel.score, { viewModel.setupGame() }, { navController.popBackStack() })
+        VictoryDialog(viewModel.score, { viewModel.setupGame() }, { onGoToGames() })
     }
 
     // CONTENEDOR PRINCIPAL
@@ -78,7 +76,7 @@ fun GameScreen(navController: NavController,
                 ) {
                     // Botón SALIR
                     Button(
-                        onClick = { navController.popBackStack() },
+                        onClick = { onGoToGames() },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                         shape = CircleShape,
                         modifier = Modifier.size(50.dp),
