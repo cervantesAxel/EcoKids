@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.eco_kids.view.ArrastrarGameScreen
 import com.example.eco_kids.view.GameScreen
 import com.example.eco_kids.view.GamesScreen
 import com.example.eco_kids.view.SplashScreen
@@ -87,7 +88,10 @@ fun AppNavigation() {
                 )
             }
 
-
+            composable (Screen.Arrastrar.route) {
+                ArrastrarGameScreen(
+                )
+            }
         }
 
         composable(Screen.GameScreen.route) {
