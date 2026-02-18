@@ -51,6 +51,9 @@ dependencies {
     implementation(libs.androidx.compose.remote.creation.core)
     val nav_version = "2.9.7"
 
+    // Preferences DataStore
+    implementation(libs.androidx.datastore.preferences)
+
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.9.7")
 

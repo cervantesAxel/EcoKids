@@ -30,11 +30,15 @@ import com.example.eco_kids.ui.theme.CurvedTopShape
 import com.example.eco_kids.ui.partials.TextField
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eco_kids.ui.partials.MascotaCarousel
+import com.example.eco_kids.viewmodel.UserViewModel
 import com.example.eco_kids.viewmodel.WelcomeViewModel
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    onContinueGames: () -> Unit
+) {
     val welcomeViewModel: WelcomeViewModel = viewModel()
+    val userViewModel: UserViewModel = viewModel()
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -135,7 +139,18 @@ fun WelcomeScreen() {
                             containerColor = Color(0xFF6CB808)
                         ),
                         onClick = {
-                            println(welcomeViewModel.nombre)
+                            if(welcomeViewModel.nombre.isNotBlank()) {
+
+                                val mascotaIndex = welcomeViewModel.mascotaSeleccionada
+
+
+                                userViewModel.saveUser(
+                                    welcomeViewModel.nombre,
+                                    mascotaIndex
+                                )
+
+                                onContinueGames()
+                            }
                         }
                     ) {
                         Text(text = "Continuar")
@@ -146,9 +161,4 @@ fun WelcomeScreen() {
     }
 }
 
-@Preview
-@Composable
-fun Preview() {
-    WelcomeScreen()
-}
 

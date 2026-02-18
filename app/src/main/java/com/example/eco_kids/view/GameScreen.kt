@@ -1,5 +1,6 @@
 package com.example.eco_kids.view
 
+import android.net.wifi.hotspot2.pps.HomeSp
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -33,7 +34,8 @@ import com.example.eco_kids.model.MemoryCard
 import com.example.eco_kids.viewmodel.GameViewModel
 
 @Composable
-fun GameScreen(navController: NavController, viewModel: GameViewModel = viewModel()) {
+fun GameScreen(navController: NavController,
+               viewModel: GameViewModel = viewModel()) {
 
     if (viewModel.showVictoryDialog) {
         VictoryDialog(viewModel.score, { viewModel.setupGame() }, { navController.popBackStack() })
