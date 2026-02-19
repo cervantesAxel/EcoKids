@@ -154,7 +154,7 @@ fun GamesScreen (
             }
             Spacer(modifier = Modifier.height(20.dp))
             GameCard(R.drawable.memorama_banner, "atrapar") {
-                navController.navigate(Screen.Memorama.route)
+                navController.navigate(Screen.Arrastrar.route)
             }
             Spacer(modifier = Modifier.height(20.dp))
             GameCard(R.drawable.memorama_banner, "tercerjuego") {
