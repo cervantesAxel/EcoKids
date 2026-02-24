@@ -1,10 +1,7 @@
 package com.example.eco_kids.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eco_kids.data.UserDataStore
 import kotlinx.coroutines.launch
@@ -20,6 +17,18 @@ class UserViewModel(
     fun saveUser (name:String, pet: Int){
         viewModelScope.launch {
             userDataStore.saveUser(name, pet)
+        }
+    }
+
+    fun setName (newName: String){
+        viewModelScope.launch {
+            userDataStore.setName(newName)
+        }
+    }
+
+    fun setPet (newPet: Int){
+        viewModelScope.launch {
+            userDataStore.setPet(newPet)
         }
     }
 

@@ -44,16 +44,34 @@ class GameViewModel : ViewModel() {
         val rawData = listOf(
             Pair(R.drawable.botella, TrashType.PLASTIC),
             Pair(R.drawable.boteverde, TrashType.PLASTIC),
-            Pair(R.drawable.ic_launcher_foreground, TrashType.PAPER),
+            Pair(R.drawable.pet_botella, TrashType.PLASTIC),
+
+            Pair(R.drawable.pap_caja, TrashType.PAPER),
             Pair(R.drawable.grayslata, TrashType.PAPER),
+            Pair(R.drawable.pap_cafe, TrashType.PAPER),
+            Pair(R.drawable.pap_libros, TrashType.PAPER),
+
             Pair(R.drawable.platano, TrashType.ORGANIC),
-            Pair(R.drawable.boteorganico, TrashType.ORGANIC)
-        )
+            Pair(R.drawable.org_lechuga, TrashType.ORGANIC),
+            Pair(R.drawable.org_manzana, TrashType.ORGANIC),
+            Pair(R.drawable.org_hoja, TrashType.ORGANIC),
+
+
+            )
         totalPairs = rawData.size
 
-        val deck = (rawData + rawData).shuffled()
+        val numberOfPairs = 6
+
+        val selectedData = rawData.shuffled().take(numberOfPairs)
+        totalPairs = selectedData.size
+
+        val deck = (selectedData + selectedData).shuffled()
+
         deck.forEachIndexed { index, item ->
-            cards.add(MemoryCard(id = index, imageRes = item.first, type = item.second))
+            cards.add(MemoryCard
+                (id = index,
+                imageRes = item.first,
+                type = item.second))
         }
     }
 

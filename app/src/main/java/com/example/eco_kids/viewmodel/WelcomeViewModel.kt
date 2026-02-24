@@ -19,11 +19,13 @@ class WelcomeViewModel : ViewModel() {
         R.drawable.mascota_8,
         R.drawable.mascota_9
     )
-
+    private val max_name = 10
     var nombre by mutableStateOf("")
     private set
     fun onNombreChange(value: String) {
-        nombre = value
+        if(value.length <= max_name) {
+            nombre = value
+        }
     }
 
     var mascotaSeleccionada by mutableStateOf(0)

@@ -1,11 +1,11 @@
 package com.example.eco_kids.view
 
-import android.R.attr.enabled
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,30 +14,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
-import androidx.compose.remote.creation.modifiers.RoundedRectShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.eco_kids.R
-import com.example.eco_kids.Screen
 import com.example.eco_kids.viewmodel.UserViewModel
 
 @Composable
 fun GamesScreen (
-    navController: NavController,
+    onGoToMemorama: () -> Unit,
+    onGotoArrastrar: () -> Unit,
+    onGoToProfile: () -> Unit,
     userViewModel: UserViewModel
 ) {
     val name by userViewModel.userName.collectAsState(initial = "")
@@ -54,111 +56,117 @@ fun GamesScreen (
             painter = painterResource(R.drawable.ic_fondo_inicio),
             contentDescription = "fondo",
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            contentScale = ContentScale.Crop
         )
 
         //aqui va header
-        Column(
+        BoxWithConstraints(
             modifier = Modifier.fillMaxSize()
-                .padding(top = 30.dp)
         ) {
+            val maxWidth = this.maxWidth
+            val maxHeight = this.maxHeight
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .drawBehind {
+            val headerHeight = maxHeight * 0.18f
+            val petSize = maxWidth * 0.18f
+            val textSize = (maxWidth.value * 0.06f).sp
 
-                        val width = size.width
-                        val height = size.height
-
-                        val path = Path().apply {
-
-                            // Curva superior
-                            moveTo(0f, height * 0.15f)
-
-                            quadraticBezierTo(
-                                width / 2,
-                                height * 0.35f,
-                                width,
-                                height * 0.15f
-                            )
-
-                            lineTo(width, height * 0.8f)
-
-                            quadraticBezierTo(
-                                width / 2,
-                                height * 1.05f,
-                                0f,
-                                height * 0.8f
-                            )
-
-                            close()
-                        }
-
-                        drawPath(
-                            path = path,
-                            color = Color(0xFF2E7D32)
-                        )
-                    }
-                    .padding(horizontal = 22.dp),
-                contentAlignment = Alignment.CenterStart
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                val mascotas = listOf(
-                    R.drawable.mascota_1,
-                    R.drawable.mascota_2,
-                    R.drawable.mascota_3,
-                    R.drawable.mascota_4,
-                    R.drawable.mascota_5,
-                    R.drawable.mascota_6,
-                    R.drawable.mascota_7,
-                    R.drawable.mascota_8,
-                    R.drawable.mascota_9
-                )
-
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start) {
-                    val selectedPet = mascotas.getOrNull(pet)
-
-                    selectedPet?.let {
-                        Image(
-                            painter = painterResource(id = it),
-                            contentDescription = null,
-                            modifier = Modifier.size(70.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(headerHeight)
+                        .padding(top = maxHeight * 0.075f)
+                        .shadow(
+                            elevation = 12.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            ambientColor = Color.Black.copy(alpha = 0.2f),
+                            spotColor = Color.Black.copy(alpha = 0.15f)
                         )
-                    }
+                        .clip(RoundedCornerShape(20.dp))
+                ) {
 
-                    Spacer(modifier = Modifier.size(5.dp))
-
-                    Text(
-                        text = "Hola, $name!",
-                        color = Color.White,
-                        fontSize = 22.sp
+                    Image(
+                        painter = painterResource(R.drawable.fondo_barra2),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = maxWidth * 0.02f)
+                    ) {
+
+                        val mascotas = listOf(
+                            R.drawable.mascota_1,
+                            R.drawable.mascota_2,
+                            R.drawable.mascota_3,
+                            R.drawable.mascota_4,
+                            R.drawable.mascota_5,
+                            R.drawable.mascota_6,
+                            R.drawable.mascota_7,
+                            R.drawable.mascota_8,
+                            R.drawable.mascota_9
+                        )
+
+                        val selectedPet = mascotas.getOrNull(pet)
+
+                        selectedPet?.let {
+                            Image(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                modifier = Modifier.size(petSize)
+                                    .clickable{
+                                        onGoToProfile()
+                                    }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(maxWidth * 0.06f))
+
+                        Text(
+                            text = "Hola, $name!",
+                            color = Color(0xFF107214),
+                            fontSize = textSize,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
-        }
 
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+                Text(
+                    text = "Mis Juegos",
+                    color = Color(0xFF01586C),
+                    fontSize = (maxWidth.value * 0.07f).sp,
+                    fontWeight = FontWeight.Bold
+                )
 
-            GameCard(R.drawable.memorama_banner, "memorama") {
-                navController.navigate(Screen.Memorama.route)
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            GameCard(R.drawable.memorama_banner, "atrapar") {
-                navController.navigate(Screen.Arrastrar.route)
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            GameCard(R.drawable.memorama_banner, "tercerjuego") {
-                navController.navigate(Screen.Memorama.route)
+                Spacer(modifier = Modifier.height(maxHeight * 0.04f))
+
+                GameCard(R.drawable.memorama_banner, "Memorama") {
+                    onGoToMemorama()
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                GameCard(R.drawable.atrapabasura_banner, "Atrapa Basura") {
+                    onGotoArrastrar()
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                GameCard(R.drawable.banner_camion, "Camion recolector") {
+                    onGoToMemorama() //navegacion pendiente
+                }
+
             }
         }
     }
@@ -166,26 +174,42 @@ fun GamesScreen (
 
 
 @Composable
-fun GameCard (imagen: Int, desc: String, onClick: () -> Unit){
-
-    Box(
-        modifier = Modifier.fillMaxWidth(0.8f)
-            .height(150.dp)
-            .padding(top = 16.dp)
-            .background(
-                shape = RoundedCornerShape(18.dp),
-                color = Color.White
+fun GameCard(
+    imagen: Int,
+    descripcion: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(0.85f)
+            .height(100.dp)
+            .graphicsLayer {
+                rotationZ = -2f
+            }
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(20.dp),
+                clip = false
             )
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ){
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color(0xFFFEFBE8))
+            .clickable { onClick() }
+            .padding(6.dp),
+            ) {
+
         Image(
             painter = painterResource(id = imagen),
-            contentDescription = desc,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            contentDescription = descripcion,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(15.dp)),
+            contentScale = ContentScale.Crop
         )
+
 
     }
 }
+
+
+
 
