@@ -11,7 +11,7 @@ val Context.gamesDataStore by preferencesDataStore(name = "games_preferences")
 
 
 class GamesDataStore (private val context: Context) {
-    
+
     //funcion para guardar puntaje
     suspend fun saveScore (userName: String,
                            gameName: String,
