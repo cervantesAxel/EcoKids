@@ -37,8 +37,16 @@ class UserDataStore (private val context: Context){
         }
     }
 
-    fun getUser (){
+    suspend fun setName (newName: String){
+        context.userDataStore.edit { preferences ->
+            preferences[USER_NAME_KEY] = newName
+        }
+    }
 
+    suspend fun setPet (newPet: Int){
+        context.userDataStore.edit { preferences ->
+            preferences[USER_PET_KEY] = newPet
+        }
     }
 }
 

@@ -11,10 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eco_kids.view.ArrastrarGameScreen
-import com.example.eco_kids.view.GameScreen
 import com.example.eco_kids.view.GamesScreen
+import com.example.eco_kids.view.MemoramaScreen
+import com.example.eco_kids.view.ProfileScreen
 import com.example.eco_kids.view.SplashScreen
 import com.example.eco_kids.view.WelcomeScreen
+import com.example.eco_kids.viewmodel.GameViewModel
 import com.example.eco_kids.viewmodel.UserViewModel
 
 class MainActivity : ComponentActivity() {
@@ -32,6 +34,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppNavigation() {
         val navController = rememberNavController()
+        val userViewModel: UserViewModel = viewModel()
+        val gameViewModel: GameViewModel = viewModel()
 
         NavHost(
             navController = navController,
@@ -39,7 +43,6 @@ class MainActivity : ComponentActivity() {
         ) {
 
             composable(Screen.Splash.route) {
-                val userViewModel: UserViewModel = viewModel ()
                 SplashScreen(
                     userViewModel = userViewModel,
                     onContinueRegister = {
@@ -72,21 +75,71 @@ class MainActivity : ComponentActivity() {
             }
 
             composable (Screen.Games.route){
-                val userViewModel: UserViewModel = viewModel()
-
-                GamesScreen(navController = navController, userViewModel = userViewModel)
+                GamesScreen(
+                    onGoToMemorama = {
+                    navController.navigate(Screen.Memorama.route){
+                        popUpTo(Screen.Memorama.route){
+                            inclusive = true
+                        }
+                    }
+                },
+                    onGotoArrastrar = {
+                        navController.navigate(Screen.Arrastrar.route){
+                            popUpTo(Screen.Arrastrar.route){
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onGoToProfile = {
+                        navController.navigate(Screen.Profile.route){
+                            popUpTo(Screen.Profile.route){
+                                inclusive = true
+                            }
+                        }
+                    },
+                    userViewModel = userViewModel)
             }
 
-            composable (Screen.Memorama.route) {
-                GameScreen(
-                    navController = navController
+            composable (Screen.Profile.route) {
+                ProfileScreen(
+                    userViewModel = userViewModel,
+                    onGoToGames = {
+                        navController.navigate(Screen.Games.route){
+                            popUpTo(Screen.Games.route){
+                                inclusive = true
+                            }
+                        }
+                    }
                 )
+            }
+            composable (Screen.Memorama.route) {
+                MemoramaScreen(
+
+                     onGoToGames = {
+                         navController.navigate(Screen.Games.route){
+                             popUpTo(Screen.Games.route){
+                                 inclusive = true
+                             }
+                         }
+                     },
+                    viewModel  = gameViewModel
+                 )
             }
 
             composable (Screen.Arrastrar.route) {
                 ArrastrarGameScreen(
+                    onGoToGames = {
+                        navController.navigate(Screen.Games.route){
+                            popUpTo(Screen.Games.route){
+                                inclusive = true
+                            }
+                        }
+                    },
+                    userViewModel = userViewModel
                 )
             }
+
+
         }
     }
 

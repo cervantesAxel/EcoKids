@@ -1,7 +1,9 @@
 package com.example.eco_kids.viewmodel
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eco_kids.data.GamesDataStore
@@ -12,10 +14,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class MemoramaViewModel (
-    context: Context
-): ViewModel(){
-    private val userDataStore = UserDataStore (context)
-    private val gamesDataStore = GamesDataStore (context)
+    application: Application
+): AndroidViewModel(application) {
+    private val userDataStore = UserDataStore (application)
+    private val gamesDataStore = GamesDataStore(application)
 
     val bestScore = MutableStateFlow(0)
 
@@ -41,11 +43,8 @@ class MemoramaViewModel (
             gamesDataStore.saveScore(
                 userName= userName,
                 gameName = "memorama",
-                score= score
+                score = score
             )
-
-            val newScore = gamesDataStore.getBestScore(userName, "memorama")
-                    .firstOrNull() ?: 0
         }
     }
 }
