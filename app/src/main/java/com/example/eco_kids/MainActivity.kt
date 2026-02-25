@@ -1,5 +1,6 @@
 package com.example.eco_kids
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.eco_kids.view.ArrastrarGameScreen
+import com.example.eco_kids.view.CamionActivity
 import com.example.eco_kids.view.GamesScreen
 import com.example.eco_kids.view.MemoramaScreen
 import com.example.eco_kids.view.ProfileScreen
@@ -97,6 +99,10 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     },
+                    onGoToCamion = {
+                        val intent = Intent(this@MainActivity, CamionActivity::class.java)
+                        startActivity(intent)
+                    },
                     userViewModel = userViewModel)
             }
 
@@ -138,8 +144,6 @@ class MainActivity : ComponentActivity() {
                     userViewModel = userViewModel
                 )
             }
-
-
         }
     }
 
