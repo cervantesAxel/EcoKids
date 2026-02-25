@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
             }
             composable (Screen.Memorama.route) {
                 MemoramaScreen(
-
+                    userViewModel = userViewModel,
                      onGoToGames = {
                          navController.navigate(Screen.Games.route){
                              popUpTo(Screen.Games.route){
