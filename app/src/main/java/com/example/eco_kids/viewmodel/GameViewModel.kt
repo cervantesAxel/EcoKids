@@ -10,6 +10,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GameViewModel : ViewModel() {
+
+    private val _isMatch = mutableStateOf(false)
+    val isMatch: State<Boolean> = _isMatch
     val cards = mutableStateListOf<MemoryCard>()
 
     var score by mutableIntStateOf(0)
@@ -92,6 +95,7 @@ class GameViewModel : ViewModel() {
 
         if (cards[index1].imageRes == cards[index2].imageRes) {
             // --- ACIERTO ---
+            _isMatch.value = true
             viewModelScope.launch {
                 delay(600)
                 cards[index1] = cards[index1].copy(isMatched = true)
@@ -119,6 +123,7 @@ class GameViewModel : ViewModel() {
                 }
             }
         } else {
+            _isMatch.value = false
             // --- ERROR (NO COINCIDEN) ---
             viewModelScope.launch {
                 delay(1000)

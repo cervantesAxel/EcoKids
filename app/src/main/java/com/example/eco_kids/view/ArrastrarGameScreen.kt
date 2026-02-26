@@ -54,6 +54,10 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
         soundPool.load(context, R.raw.sonido_acierto, 1)
     }
 
+    val soundIncorrect = remember {
+        soundPool.load(context, R.raw.sonido_incorrecto,1)
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             soundPool.release()
@@ -170,7 +174,8 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                     vibrar(50)
             } else {
                 vidas--
-                    vibrar(200)
+                soundPool.play(soundIncorrect,1f,1f,0,0,1f)
+                vibrar(200)
 
                 }
             resetResiduo()
@@ -183,6 +188,8 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                     vibrar(50)
                 } else {
                     vidas--
+                    soundPool.play(soundIncorrect,1f,1f,0,0,1f)
+
                     vibrar(200)
                 }
                 resetResiduo()
@@ -195,6 +202,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                     vibrar(50)
                 } else {
                     vidas--
+                    soundPool.play(soundIncorrect,1f,1f,0,0,1f)
                     vibrar(200)
                 }
                 resetResiduo()
@@ -225,7 +233,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
     Box(modifier = Modifier.fillMaxSize()) {
 
         Image(
-            painter = painterResource(id = R.drawable.ic_fondo_inicio),
+            painter = painterResource(id = R.drawable.fondo_pantalla5),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -260,40 +268,49 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
-                    // Botón SALIR
-                    Button(
-                        onClick = { onGoToGames() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFFF9800).copy(0.7f)
-                        ),
-                        shape = CircleShape,
-                        modifier = Modifier.size(50.dp),
-                        contentPadding = PaddingValues(0.dp)
+
+                    // Fila organizada del header
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier.size(26.dp)
+
+                        // Botón regresar
+                        Button(
+                            onClick = { onGoToGames() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFFF9800).copy(0.8f)
+                            ),
+                            shape = CircleShape,
+                            modifier = Modifier.size(45.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+
+                        // Puntos
+                        Text(
+                            text = "Puntos: $puntos",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF107214)
+                        )
+
+                        // Vidas
+                        Text(
+                            text = "Vidas: $vidas",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF01586C)
                         )
                     }
-
-                    Text(
-                        text = "Puntos: $puntos",
-                        fontSize = 20.sp,
-                        color = Color(0xFF107214),
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(start = 20.dp)
-                    )
-
-                    Text(
-                        text = "Vidas: $vidas",
-                        fontSize = 20.sp,
-                        color = Color.Red,
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 20.dp)
-                    )
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -446,10 +463,9 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // Tipos de residuos
-                            ResiduoRow("🟢", "Orgánico", Color(0xFF4CAF50))
-                            ResiduoRow("🟠", "Plástico", Color(0xFFFF9800))
-                            ResiduoRow("⚫", "Papel", Color(0xFF607D8B))
-
+                        ResiduoRow("🟢", "Orgánico", Color(0xFF4CAF50))
+                        ResiduoRow("🔵", "Plástico", Color(0xFF4AA6B7))
+                        ResiduoRow("⚫", "Papel", Color(0xFF607D8B))
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(

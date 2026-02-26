@@ -4,16 +4,32 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,17 +46,41 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.eco_kids.R
+import com.example.eco_kids.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @Composable
 fun CamionScreen(
-    onGoToGames: () -> Unit
+    onGoToGames: () -> Unit,
+    userViewModel: UserViewModel
 ) {
+
+    //variable para mostyrar instrucciones
+    var showInstructions by remember { mutableStateOf(true) }
+
+    //mascota para mostrar
+    val pet by userViewModel.userPet.collectAsState(initial = -1)
+    val name by userViewModel.userName.collectAsState(initial = "")
+
+    val mascotas = listOf(
+        R.drawable.mascota_1,
+        R.drawable.mascota_2,
+        R.drawable.mascota_3,
+        R.drawable.mascota_4,
+        R.drawable.mascota_5,
+        R.drawable.mascota_6,
+        R.drawable.mascota_7,
+        R.drawable.mascota_8,
+        R.drawable.mascota_9
+    )
+
+    val selectedPet = mascotas.getOrNull(pet)
     var puntos by remember { mutableIntStateOf(0) }
     var vidas by remember { mutableIntStateOf(3) }
     var juegoActivo by remember { mutableStateOf(true) }
@@ -295,5 +335,89 @@ fun CamionScreen(
                 onExit = onGoToGames
             )
         }
+    }
+    if (showInstructions) {
+        AlertDialog(
+            onDismissRequest = {  },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showInstructions = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("¡Jugar!")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {onGoToGames()},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Regresar", color = Color.White)
+                }
+            },
+            title = {
+                Text("¿Cómo Jugar?")
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Imagen de la mascota
+                    selectedPet?.let { petRes ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(100.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFA3DBDE)
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Row(modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = petRes),
+                                    contentDescription = "Mascota",
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(12.dp)
+                                )
+
+                                Text(
+                                    text = "¡Recolecta la basura reciclable y evita los desechos!",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF01586C)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            containerColor = Color(0xFFFEFBE8),
+            shape = RoundedCornerShape(20.dp)
+        )
     }
 }

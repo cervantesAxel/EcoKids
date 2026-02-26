@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,10 +63,21 @@ import com.example.eco_kids.viewmodel.UserViewModel
 fun ProfileScreen (userViewModel: UserViewModel,
                    onGoToGames: () -> Unit) {
 
+    var confirmDialog by remember { mutableStateOf(false) }
+
     val name by userViewModel.userName.collectAsState(initial = "")
     val pet by userViewModel.userPet.collectAsState(initial = 0)
 
     var newName by remember { mutableStateOf("") }
+    var selectedPet by remember { mutableStateOf(pet) }
+    val max_name = 10
+
+    LaunchedEffect (pet) {
+        selectedPet = pet
+    }
+    LaunchedEffect(name) {
+        newName = name ?: ""
+    }
 
     val mascotas = listOf(
         R.drawable.mascota_1,
@@ -181,12 +195,13 @@ fun ProfileScreen (userViewModel: UserViewModel,
                 TextField(
                     value = newName,
                     onValueChange = {
-                        newName = it
-                        userViewModel.setName(it)
+                        if(newName.length <= max_name) {
+                            newName = it
+                        }
                     },
                     placeholder = "Escribe tu nombre",
-                    colorContainer = 0xFFFEFBE8,
-                    colorBorder = 0xFF107214
+                    colorContainer = 0xFFFAF1D0,
+                    colorBorder = 0xFF01586C
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -194,6 +209,7 @@ fun ProfileScreen (userViewModel: UserViewModel,
                 Text(
                     text = "Escoge tu mascota!",
                     fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
                     color = Color (0xFF01586C)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
@@ -201,12 +217,12 @@ fun ProfileScreen (userViewModel: UserViewModel,
                 LazyVerticalGrid (
                     columns = GridCells.Fixed(3),
                     modifier = Modifier.fillMaxWidth(0.9f)
-                        .height(maxHeight*0.5f),
+                        .height(maxHeight*0.45f),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     itemsIndexed(mascotas) { index, petRes ->
-                        val isSelected = index == pet
+                        val isSelected = index == selectedPet
 
 
                         Card(
@@ -219,7 +235,7 @@ fun ProfileScreen (userViewModel: UserViewModel,
                             colors = CardDefaults.cardColors(
                                 containerColor = if (isSelected) Color(0xFFFCE899) else Color(0xFFFEFBE8)
                             ), onClick = {
-                                userViewModel.setPet(index)
+                                selectedPet = index
                             }
                         ) {
                             Image(
@@ -245,11 +261,100 @@ fun ProfileScreen (userViewModel: UserViewModel,
                         containerColor = Color(0xFF6CB808)
                     ),
                     onClick = {
-                        //pendiente poner la validacion
-                        onGoToGames()
+                        if (newName.isNotBlank()) {
+                            confirmDialog = true
                         }
+                    }
                 ) {
-                    Text(text = "Continuar")
+                    Text(text = "Guardar Cambios")
+                }
+
+                if (confirmDialog){
+                    AlertDialog(
+                        onDismissRequest = {confirmDialog = false },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    confirmDialog = false
+                                    userViewModel.setName(newName)
+                                    userViewModel.setPet(selectedPet)
+                                    onGoToGames()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFFF9800),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Sí, guardar")
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = {confirmDialog = false},
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFFF9800),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Cancelar", color = Color.White)
+                            }
+                        },
+                        title = {
+                            Text("Confirmar Cambios")
+                        },
+                        text = {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                // Imagen de la mascota
+                                val petRes = mascotas[selectedPet]
+
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(100.dp),
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color(0xFFA3DBDE)
+                                        ),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                    ) {
+                                        Row(modifier = Modifier.fillMaxSize(),
+                                            verticalAlignment = Alignment.CenterVertically) {
+                                            Image(
+                                                painter = painterResource(id = petRes),
+                                                contentDescription = "Mascota",
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .padding(12.dp)
+                                            )
+
+                                            Text(
+                                                text = "¿Seguro que quieres confirmar los cambios realizados?",
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                textAlign = TextAlign.Center,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFF01586C)
+                                            )
+                                        }
+                                    }
+                                }
+                        },
+                        containerColor = Color(0xFFFEFBE8),
+                        shape = RoundedCornerShape(20.dp)
+                    )
                 }
         }
 
