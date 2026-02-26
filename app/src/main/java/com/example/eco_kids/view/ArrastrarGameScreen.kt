@@ -1,12 +1,16 @@
 package com.example.eco_kids.view
 
+import android.content.Context
+import android.media.SoundPool
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
@@ -23,12 +27,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.getSystemService
 import com.example.eco_kids.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
@@ -38,7 +44,30 @@ data class Residuo(val drawableId: Int, val tipo: String)
 fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         userViewModel: UserViewModel) {
 
-    //variable para mostyrar instrucciones
+    //sonido
+    val context = LocalContext.current
+    val soundPool = remember {
+        SoundPool.Builder().setMaxStreams(2).build()
+    }
+
+    val soundCorrect = remember {
+        soundPool.load(context, R.raw.sonido_acierto, 1)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundPool.release()
+        }
+    }
+
+    val vibrator = remember {if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S){
+        val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibratorManager.defaultVibrator
+    } else {
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }}
+
+    //variable para mostrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
 
     //mascota para mostrar
@@ -96,6 +125,18 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
     var currentResiduo by remember { mutableStateOf(residuos.random()) }
 
+    fun vibrar (duration: Long){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    duration, VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+        } else {
+            vibrator.vibrate(duration)
+        }
+    }
+
     fun resetResiduo() {
         var nuevo: Residuo
         do {
@@ -123,18 +164,41 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
         when {
             zonaDeCaptura(boteOrganicoBounds)?.overlaps(residuo) == true -> {
-                if (currentResiduo.tipo == "organico") puntos += 10 else vidas--
-                resetResiduo()
+                if (currentResiduo.tipo == "organico")   {
+                    puntos += 10
+                    soundPool.play(soundCorrect, 1f, 1f, 0, 0, 1f)
+                    vibrar(50)
+            } else {
+                vidas--
+                    vibrar(200)
+
+                }
+            resetResiduo()
             }
 
             zonaDeCaptura(botePlasticoBounds)?.overlaps(residuo) == true -> {
-                if (currentResiduo.tipo == "plastico") puntos += 10 else vidas--
+                if (currentResiduo.tipo == "plastico") {
+                    puntos += 10
+                    soundPool.play(soundCorrect, 1f, 1f, 0, 0, 1f)
+                    vibrar(50)
+                } else {
+                    vidas--
+                    vibrar(200)
+                }
                 resetResiduo()
             }
 
             zonaDeCaptura(botePapelBounds)?.overlaps(residuo) == true -> {
-                if (currentResiduo.tipo == "papel") puntos += 10 else vidas--
+                if (currentResiduo.tipo == "papel") {
+                    puntos += 10
+                    soundPool.play(soundCorrect, 1f, 1f, 0, 0, 1f)
+                    vibrar(50)
+                } else {
+                    vidas--
+                    vibrar(200)
+                }
                 resetResiduo()
+
             }
         }
 
@@ -196,6 +260,22 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
+                    // Botón SALIR
+                    Button(
+                        onClick = { onGoToGames() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800).copy(0.7f)
+                        ),
+                        shape = CircleShape,
+                        modifier = Modifier.size(50.dp),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
 
                     Text(
                         text = "Puntos: $puntos",
@@ -291,7 +371,11 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         onClick = {
                             showInstructions = false
                             resetResiduo()
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800),
+                            contentColor = Color.White
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
@@ -304,7 +388,11 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                 },
                 dismissButton = {
                     Button(
-                        onClick = {onGoToGames()}
+                        onClick = {onGoToGames()},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800),
+                            contentColor = Color.White
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -312,7 +400,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Regresar", color = Color.Gray)
+                        Text("Regresar", color = Color.White)
                     }
                 },
                 title = {
@@ -330,7 +418,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                                     .height(100.dp),
                                 shape = RoundedCornerShape(16.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = Color(0xFFF5F5F5)
+                                    containerColor = Color(0xFFA3DBDE)
                                 ),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
@@ -341,14 +429,15 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                                         contentDescription = "Mascota",
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .padding(12.dp)
+                                            .padding(10.dp)
                                     )
 
                                     Text(
                                         "¡Arrastra el residuo hacia el bote correcto!",
+                                        fontWeight = FontWeight.Bold,
                                         style = MaterialTheme.typography.bodyLarge,
                                         textAlign = TextAlign.Center,
-                                        color = Color.DarkGray
+                                        color = Color(0xFF01586C)
                                     )
                                 }
                             }
@@ -371,7 +460,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         )
                     }
                 },
-                containerColor = Color.White,
+                containerColor = Color(0xFFFEFBE8),
                 shape = RoundedCornerShape(20.dp)
             )
         }
