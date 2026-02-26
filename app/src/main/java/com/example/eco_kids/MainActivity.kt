@@ -50,16 +50,12 @@ import com.example.eco_kids.view.WelcomeScreen
                         userViewModel = userViewModel,
                         onContinueRegister = {
                             navController.navigate(Screen.Home.route) {
-                                popUpTo(Screen.Splash.route) {
-                                    inclusive = true
-                                }
+                                popUpTo(Screen.Splash.route) { inclusive = true }
                             }
                         },
                         onContinueGames = {
-                            navController.navigate(Screen.Games.route){
-                                popUpTo(Screen.Games.route){
-                                    inclusive = true
-                                }
+                            navController.navigate(Screen.Games.route) {
+                                popUpTo(Screen.Games.route) { inclusive = true }
                             }
                         }
                     )
@@ -68,83 +64,54 @@ import com.example.eco_kids.view.WelcomeScreen
                 composable(Screen.Home.route) {
                     WelcomeScreen(
                         onContinueGames = {
-                            navController.navigate(Screen.Games.route){
-                                popUpTo(Screen.Games.route){
-                                    inclusive = true
-                                }
+                            navController.navigate(Screen.Games.route) {
+                                popUpTo(Screen.Games.route) { inclusive = true }
                             }
                         }
                     )
                 }
 
-                composable (Screen.Games.route){
-                    val context = LocalContext.current
+                composable(Screen.Games.route) {
                     GamesScreen(
                         onGoToMemorama = {
-                        navController.navigate(Screen.Memorama.route){
-                            popUpTo(Screen.Memorama.route){
-                                inclusive = true
-                            }
-                        }
-                    },
+                            navController.navigate(Screen.Memorama.route)
+                        },
                         onGotoArrastrar = {
-                            navController.navigate(Screen.Arrastrar.route){
-                                popUpTo(Screen.Arrastrar.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Arrastrar.route)
                         },
                         onGoToProfile = {
-                            navController.navigate(Screen.Profile.route){
-                                popUpTo(Screen.Profile.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Profile.route)
                         },
                         onGoToCamion = {
-                            navController.navigate(Screen.Camion.route){
-                                popUpTo(Screen.Camion.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Camion.route)
                         },
-                        userViewModel = userViewModel)
+                        userViewModel = userViewModel
+                    )
                 }
 
-                composable (Screen.Profile.route) {
+                composable(Screen.Profile.route) {
                     ProfileScreen(
                         userViewModel = userViewModel,
                         onGoToGames = {
-                            navController.navigate(Screen.Games.route){
-                                popUpTo(Screen.Games.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Games.route)
                         }
-                    }
-                )
-            }
-            composable (Screen.Memorama.route) {
-                MemoramaScreen(
-                    userViewModel = userViewModel,
-                     onGoToGames = {
-                         navController.navigate(Screen.Games.route){
-                             popUpTo(Screen.Games.route){
-                                 inclusive = true
-                             }
-                         },
-                        viewModel  = gameViewModel
-                     )
+                    )
                 }
 
-                composable (Screen.Arrastrar.route) {
+                composable(Screen.Memorama.route) {
+                    MemoramaScreen(
+                        userViewModel = userViewModel,
+                        onGoToGames = {
+                            navController.navigate(Screen.Games.route)
+                        },
+                        viewModel = gameViewModel
+                    )
+                }
+
+                composable(Screen.Arrastrar.route) {
                     ArrastrarGameScreen(
                         onGoToGames = {
-                            navController.navigate(Screen.Games.route){
-                                popUpTo(Screen.Games.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Games.route)
                         },
                         userViewModel = userViewModel
                     )
@@ -153,11 +120,7 @@ import com.example.eco_kids.view.WelcomeScreen
                 composable(Screen.Camion.route) {
                     CamionScreen(
                         onGoToGames = {
-                            navController.navigate(Screen.Games.route){
-                                popUpTo(Screen.Games.route){
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(Screen.Games.route)
                         }
                     )
                 }
