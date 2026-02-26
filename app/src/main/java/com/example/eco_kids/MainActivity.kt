@@ -121,7 +121,8 @@ import com.example.eco_kids.view.WelcomeScreen
                     CamionScreen(
                         onGoToGames = {
                             navController.navigate(Screen.Games.route)
-                        }
+                        },
+                        userViewModel = userViewModel
                     )
                 }
             }

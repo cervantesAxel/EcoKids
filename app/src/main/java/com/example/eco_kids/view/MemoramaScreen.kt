@@ -58,12 +58,18 @@ viewModel: GameViewModel,
     }
 
     val soundCorrect = remember {
-        soundPool.load(context, R.raw.sonido_acierto, 1)
+        soundPool.load(context, R.raw.sonido_acierto2, 1)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             soundPool.release()
+        }
+    }
+
+    LaunchedEffect(viewModel.isMatch.value) {
+        if (viewModel.isMatch.value) {
+            soundPool.play(soundCorrect, 1f, 1f, 0, 0, 1f)
         }
     }
 
@@ -112,7 +118,7 @@ viewModel: GameViewModel,
 
         // FONDO
         Image(
-            painter = painterResource(id = R.drawable.fondo_pantalla),
+            painter = painterResource(id = R.drawable.fondo_pantalla4),
             contentDescription = "Fondo",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -181,19 +187,23 @@ viewModel: GameViewModel,
                         // Botón REINICIAR
                         Button(
                             onClick = { viewModel.setupGame() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF01586C).copy(0.7f)),
                             shape = CircleShape,
                             modifier = Modifier.size(50.dp),
                             contentPadding = PaddingValues(0.dp)
                         ) {
-                            Text("🔄", fontSize = 24.sp)
+                            Icon(
+                                painter = painterResource(id = R.drawable.again),
+                                contentDescription = null,
+                                modifier = Modifier.size(26.dp)
+                            )
                         }
 
                         // PUNTAJE
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
                                 text = "PUNTOS: ${viewModel.score}",
-                                color = Color.White,
+                                color = Color(0xFF107214),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 style = TextStyle(
@@ -269,7 +279,7 @@ viewModel: GameViewModel,
 
     if (showInstructions) {
         AlertDialog(
-            onDismissRequest = { onGoToGames() },
+            onDismissRequest = {  },
             confirmButton = {
                 Button(
                     onClick = {

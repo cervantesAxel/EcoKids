@@ -70,6 +70,7 @@ fun ProfileScreen (userViewModel: UserViewModel,
 
     var newName by remember { mutableStateOf("") }
     var selectedPet by remember { mutableStateOf(pet) }
+    val max_name = 10
 
     LaunchedEffect (pet) {
         selectedPet = pet
@@ -194,7 +195,9 @@ fun ProfileScreen (userViewModel: UserViewModel,
                 TextField(
                     value = newName,
                     onValueChange = {
-                        newName = it
+                        if(newName.length <= max_name) {
+                            newName = it
+                        }
                     },
                     placeholder = "Escribe tu nombre",
                     colorContainer = 0xFFFAF1D0,
@@ -287,7 +290,7 @@ fun ProfileScreen (userViewModel: UserViewModel,
                                     contentDescription = null,
                                     modifier = Modifier.size(20.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text("Sí, guardar")
                             }
                         },

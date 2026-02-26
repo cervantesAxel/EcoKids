@@ -20,9 +20,12 @@ class UserViewModel(
         }
     }
 
+    private val max_name = 10
     fun setName (newName: String){
-        viewModelScope.launch {
-            userDataStore.setName(newName)
+        if(newName.length <= max_name) {
+            viewModelScope.launch {
+                userDataStore.setName(newName)
+            }
         }
     }
 
