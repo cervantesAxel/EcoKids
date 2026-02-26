@@ -3,10 +3,20 @@ package com.example.eco_kids.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -27,9 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.eco_kids.R
 import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 import kotlin.random.Random
 
 @Composable
@@ -39,15 +50,16 @@ fun CamionScreen(
     var puntos by remember { mutableIntStateOf(0) }
     var vidas by remember { mutableIntStateOf(3) }
     var juegoActivo by remember { mutableStateOf(true) }
+    var showGameOverDialog by remember { mutableStateOf(false) }
 
     var camionX by remember { mutableFloatStateOf(0f) }
     var basuraY by remember { mutableFloatStateOf(0f) }
     var basuraX by remember { mutableFloatStateOf(0f) }
-    var basura2Y by remember { mutableFloatStateOf(0f) }
+    var basura2Y by remember { mutableFloatStateOf(-200f) }
     var basura2X by remember { mutableFloatStateOf(0f) }
-    var lataY by remember { mutableFloatStateOf(0f) }
+    var lataY by remember { mutableFloatStateOf(-400f) }
     var lataX by remember { mutableFloatStateOf(0f) }
-    var manzanaY by remember { mutableFloatStateOf(0f) }
+    var manzanaY by remember { mutableFloatStateOf(-600f) }
     var manzanaX by remember { mutableFloatStateOf(0f) }
 
     var screenWidth by remember { mutableFloatStateOf(0f) }
@@ -63,20 +75,8 @@ fun CamionScreen(
             .fillMaxSize()
             .background(Color.Black)
             .pointerInput(juegoActivo) {
-                if (!juegoActivo) {
-                    puntos = 0
-                    vidas = 3
-                    juegoActivo = true
-                    basuraY = 0f
-                    basura2Y = 0f
-                    lataY = 0f
-                    manzanaY = 0f
-                    if (screenWidth > 0) {
-                        basuraX = Random.nextInt(0, (screenWidth - 80).toInt()).toFloat()
-                        basura2X = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
-                        lataX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
-                        manzanaX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
-                    }
+                if (!juegoActivo && showGameOverDialog) {
+                    // El diálogo maneja el reinicio
                 }
             }
             .pointerInput(juegoActivo, screenWidth) {
@@ -156,7 +156,7 @@ fun CamionScreen(
         )
 
         Text(
-            text = if (juegoActivo) "Puntos: $puntos  Vidas: $vidas" else "GAME OVER\nToca para reiniciar",
+            text = "Puntos: $puntos  Vidas: $vidas",
             color = Color.White,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
@@ -169,29 +169,29 @@ fun CamionScreen(
             if (!juegoActivo || screenWidth == 0f) return@LaunchedEffect
 
             while (juegoActivo) {
-                delay(30)
+                delay(50)
 
-                lataY += 18
-                manzanaY += 22
-                basuraY += 20
-                basura2Y += 25
+                lataY += 10
+                manzanaY += 12
+                basuraY += 10
+                basura2Y += 12
 
                 if (basuraY > screenHeight) {
-                    basuraY = 0f
+                    basuraY = -200f
                     basuraX = Random.nextInt(0, (screenWidth - 80).toInt()).toFloat()
                 }
 
                 if (basura2Y > screenHeight) {
-                    basura2Y = 0f
+                    basura2Y = -400f
                     basura2X = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                 }
                 if (lataY > screenHeight) {
-                    lataY = 0f
+                    lataY = -600f
                     lataX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                 }
 
                 if (manzanaY > screenHeight) {
-                    manzanaY = 0f
+                    manzanaY = -800f
                     manzanaX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                 }
 
@@ -203,7 +203,7 @@ fun CamionScreen(
                     camionY + camionHeight > basuraY
                 ) {
                     puntos++
-                    basuraY = 0f
+                    basuraY = -200f
                     basuraX = Random.nextInt(0, (screenWidth - 80).toInt()).toFloat()
                 }
 
@@ -215,10 +215,11 @@ fun CamionScreen(
                     camionY + camionHeight > basura2Y
                 ) {
                     vidas--
-                    basura2Y = 0f
+                    basura2Y = -400f
                     basura2X = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                     if (vidas <= 0) {
                         juegoActivo = false
+                        showGameOverDialog = true
                     }
                 }
 
@@ -230,7 +231,7 @@ fun CamionScreen(
                     camionY + camionHeight > lataY
                 ) {
                     puntos++
-                    lataY = 0f
+                    lataY = -600f
                     lataX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                 }
 
@@ -242,11 +243,93 @@ fun CamionScreen(
                     camionY + camionHeight > manzanaY
                 ) {
                     vidas--
-                    manzanaY = 0f
+                    manzanaY = -800f
                     manzanaX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                     if (vidas <= 0) {
                         juegoActivo = false
+                        showGameOverDialog = true
                     }
+                }
+            }
+        }
+
+        if (showGameOverDialog) {
+            GameOverDialog(
+                score = puntos,
+                onRestart = {
+                    puntos = 0
+                    vidas = 3
+                    juegoActivo = true
+                    showGameOverDialog = false
+                    basuraY = 0f
+                    basura2Y = -200f
+                    lataY = -400f
+                    manzanaY = -600f
+                    if (screenWidth > 0) {
+                        basuraX = Random.nextInt(0, (screenWidth - 80).toInt()).toFloat()
+                        basura2X = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
+                        lataX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
+                        manzanaX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
+                    }
+                },
+                onExit = onGoToGames
+            )
+        }
+    }
+}
+
+@Composable
+fun GameOverDialog(score: Int, onRestart: () -> Unit, onExit: () -> Unit) {
+    Dialog(onDismissRequest = {}) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(24.dp))
+                .background(Color.White)
+                .size(300.dp)
+                .height(350.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.papup),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Game Over!",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFE53935)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Puntaje:", fontSize = 18.sp)
+                Text(
+                    "$score",
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color(0xFFFF9800)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = onRestart,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Volver a Jugar")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = onExit,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Salir")
                 }
             }
         }
