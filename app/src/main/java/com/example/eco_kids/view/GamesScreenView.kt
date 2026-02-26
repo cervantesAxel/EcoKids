@@ -39,6 +39,7 @@ import com.example.eco_kids.viewmodel.UserViewModel
 fun GamesScreen (
     onGoToMemorama: () -> Unit,
     onGotoArrastrar: () -> Unit,
+    onGoToCamion: () -> Unit,
     onGoToProfile: () -> Unit,
     userViewModel: UserViewModel
 ) {
@@ -164,7 +165,7 @@ fun GamesScreen (
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 GameCard(R.drawable.banner_camion, "Camion recolector") {
-                    onGoToMemorama() //navegacion pendiente
+                    onGoToCamion() //navegacion pendiente
                 }
 
             }
