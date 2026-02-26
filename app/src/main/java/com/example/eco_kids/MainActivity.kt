@@ -12,12 +12,13 @@
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
-    import com.example.eco_kids.view.ArrastrarGameScreen
-    import com.example.eco_kids.view.GamesScreen
-    import com.example.eco_kids.view.MemoramaScreen
-    import com.example.eco_kids.view.ProfileScreen
-    import com.example.eco_kids.view.SplashScreen
-    import com.example.eco_kids.view.WelcomeScreen
+import com.example.eco_kids.view.ArrastrarGameScreen
+import com.example.eco_kids.view.CamionScreen
+import com.example.eco_kids.view.GamesScreen
+import com.example.eco_kids.view.MemoramaScreen
+import com.example.eco_kids.view.ProfileScreen
+import com.example.eco_kids.view.SplashScreen
+import com.example.eco_kids.view.WelcomeScreen
     import com.example.eco_kids.viewmodel.GameViewModel
     import com.example.eco_kids.viewmodel.UserViewModel
 
@@ -101,6 +102,11 @@
                             }
                         },
                         onGoToCamion = {
+                            navController.navigate(Screen.Camion.route){
+                                popUpTo(Screen.Camion.route){
+                                    inclusive = true
+                                }
+                            }
                         },
                         userViewModel = userViewModel)
                 }
@@ -143,7 +149,18 @@
                         userViewModel = userViewModel
                     )
                 }
+
+                composable(Screen.Camion.route) {
+                    CamionScreen(
+                        onGoToGames = {
+                            navController.navigate(Screen.Games.route){
+                                popUpTo(Screen.Games.route){
+                                    inclusive = true
+                                }
+                            }
+                        }
+                    )
+                }
             }
         }
-
     }
