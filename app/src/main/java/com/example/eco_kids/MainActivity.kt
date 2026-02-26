@@ -121,16 +121,16 @@ import com.example.eco_kids.view.WelcomeScreen
                                 }
                             }
                         }
-                    )
-                }
-                composable (Screen.Memorama.route) {
-                    MemoramaScreen(
-
-                         onGoToGames = {
-                             navController.navigate(Screen.Games.route){
-                                 popUpTo(Screen.Games.route){
-                                     inclusive = true
-                                 }
+                    }
+                )
+            }
+            composable (Screen.Memorama.route) {
+                MemoramaScreen(
+                    userViewModel = userViewModel,
+                     onGoToGames = {
+                         navController.navigate(Screen.Games.route){
+                             popUpTo(Screen.Games.route){
+                                 inclusive = true
                              }
                          },
                         viewModel  = gameViewModel

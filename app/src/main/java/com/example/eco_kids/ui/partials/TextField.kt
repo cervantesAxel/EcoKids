@@ -17,10 +17,13 @@ import androidx.compose.ui.unit.dp
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String
+    placeholder: String,
+    colorContainer: Long,
+    colorBorder: Long
 ) {
 
-    val customBorderColor = Color(0xFFB1E8DD)
+    val customBorderColor = Color(colorBorder)
+    val customContainerColor = Color(colorContainer)
 
     OutlinedTextField(
         value = value,
@@ -31,7 +34,11 @@ fun TextField(
             focusedBorderColor = customBorderColor,
             unfocusedBorderColor = customBorderColor,
             disabledBorderColor = customBorderColor,
-            errorBorderColor = customBorderColor
+            errorBorderColor = customBorderColor,
+
+            focusedContainerColor = customContainerColor,
+            unfocusedContainerColor = customContainerColor,
+            disabledContainerColor = customContainerColor
         ),
         modifier = Modifier
             .fillMaxWidth()

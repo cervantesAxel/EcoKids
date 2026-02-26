@@ -1,5 +1,10 @@
 package com.example.eco_kids.view
 
+import android.content.Context
+import android.media.MediaPlayer
+import android.media.SoundPool
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -11,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,9 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -39,8 +47,53 @@ import com.example.eco_kids.viewmodel.WelcomeViewModel
 
 @Composable
 fun MemoramaScreen(onGoToGames: () -> Unit,
-viewModel: GameViewModel
+viewModel: GameViewModel,
+                   userViewModel: UserViewModel
 ) {
+
+    //sonido declaraciones
+    val context = LocalContext.current
+    val soundPool = remember {
+        SoundPool.Builder().setMaxStreams(2).build()
+    }
+
+    val soundCorrect = remember {
+        soundPool.load(context, R.raw.sonido_acierto, 1)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundPool.release()
+        }
+    }
+
+    val vibrator = remember {if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S){
+        val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibratorManager.defaultVibrator
+    } else {
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }}
+
+    //variable para mostyrar instrucciones
+    var showInstructions by remember { mutableStateOf(true) }
+
+    //mascota para mostrar
+    val pet by userViewModel.userPet.collectAsState(initial = -1)
+    val name by userViewModel.userName.collectAsState(initial = "")
+
+    val mascotas = listOf(
+        R.drawable.mascota_1,
+        R.drawable.mascota_2,
+        R.drawable.mascota_3,
+        R.drawable.mascota_4,
+        R.drawable.mascota_5,
+        R.drawable.mascota_6,
+        R.drawable.mascota_7,
+        R.drawable.mascota_8,
+        R.drawable.mascota_9
+    )
+
+    val selectedPet = mascotas.getOrNull(pet)
     val memoramaViewModel: MemoramaViewModel = viewModel()
     val bestScore by memoramaViewModel.bestScore.collectAsState(initial = 0)
 
@@ -107,10 +160,13 @@ viewModel: GameViewModel
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
+
                         // Botón SALIR
                         Button(
                             onClick = { onGoToGames() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFFF9800).copy(0.7f)
+                            ),
                             shape = CircleShape,
                             modifier = Modifier.size(50.dp),
                             contentPadding = PaddingValues(0.dp)
@@ -118,7 +174,7 @@ viewModel: GameViewModel
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(26.dp)
                             )
                         }
 
@@ -209,6 +265,91 @@ viewModel: GameViewModel
                 }
             }
         }
+    }
+
+    if (showInstructions) {
+        AlertDialog(
+            onDismissRequest = { onGoToGames() },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showInstructions = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("¡Jugar!")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {onGoToGames()},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Regresar", color = Color.White)
+                }
+            },
+            title = {
+                Text("¿Cómo Jugar?")
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Imagen de la mascota
+                    selectedPet?.let { petRes ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(100.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFA3DBDE)
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Row(modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = petRes),
+                                    contentDescription = "Mascota",
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(12.dp)
+                                )
+
+                                Text(
+                                    text = "¡Voltea cartas y encuentra los pares correctos!",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF01586C)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            containerColor = Color(0xFFFEFBE8),
+            shape = RoundedCornerShape(20.dp)
+        )
     }
 }
 // --- CARTA CON ANIMACIÓN 3D (Se mantiene igual) ---

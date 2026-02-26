@@ -105,7 +105,9 @@ fun WelcomeScreen(
                 TextField(
                     value = welcomeViewModel.nombre,
                     onValueChange = { welcomeViewModel.onNombreChange(it) },
-                    placeholder = "Escribe tu nombre"
+                    placeholder = "Escribe tu nombre",
+                    colorContainer = 0x00000000,
+                    colorBorder = 0xFFB1E8DD
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
