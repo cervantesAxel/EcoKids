@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -93,7 +94,10 @@ fun GamesScreen (
                     Image(
                         painter = painterResource(R.drawable.fondo_barra2),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
+                            .clickable{
+                                onGoToProfile()
+                            },
                         contentScale = ContentScale.Crop
                     )
 
@@ -123,9 +127,7 @@ fun GamesScreen (
                                 painter = painterResource(id = it),
                                 contentDescription = null,
                                 modifier = Modifier.size(petSize)
-                                    .clickable{
-                                        onGoToProfile()
-                                    }
+
                             )
                         }
 
@@ -181,33 +183,24 @@ fun GameCard(
     onClick: () -> Unit
 ) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth(0.85f)
             .height(100.dp)
-            .graphicsLayer {
-                rotationZ = -2f
-            }
-            .shadow(
-                elevation = 12.dp,
-                shape = RoundedCornerShape(20.dp),
-                clip = false
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFFFEFBE8))
-            .clickable { onClick() }
-            .padding(6.dp),
-            ) {
-
+            .graphicsLayer { rotationZ = -2f }
+            .shadow(12.dp, shape = RoundedCornerShape(20.dp)),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEFBE8))
+    ) {
         Image(
             painter = painterResource(id = imagen),
             contentDescription = descripcion,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(6.dp)
                 .clip(RoundedCornerShape(15.dp)),
             contentScale = ContentScale.Crop
         )
-
-
     }
 }
 
