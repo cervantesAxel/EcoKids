@@ -41,6 +41,7 @@ fun GamesScreen (
     onGoToMemorama: () -> Unit,
     onGotoArrastrar: () -> Unit,
     onGoToCamion: () -> Unit,
+    onGoToSnake: () -> Unit,
     onGoToProfile: () -> Unit,
     userViewModel: UserViewModel
 ) {
@@ -169,7 +170,10 @@ fun GamesScreen (
                 GameCard(R.drawable.banner_camion, "Camion recolector") {
                     onGoToCamion()
                 }
-
+                Spacer(modifier = Modifier.height(20.dp))
+                GameCard(R.drawable.banner_camion, "Camion recolector") {
+                    onGoToSnake()
+                }
             }
         }
     }

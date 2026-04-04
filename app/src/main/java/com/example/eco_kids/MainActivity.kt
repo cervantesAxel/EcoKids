@@ -5,9 +5,10 @@
     import androidx.activity.ComponentActivity
     import androidx.activity.compose.setContent
     import androidx.activity.enableEdgeToEdge
+    import androidx.compose.foundation.layout.fillMaxSize
     import androidx.compose.material3.MaterialTheme
     import androidx.compose.runtime.Composable
-    import androidx.compose.ui.platform.LocalContext
+    import androidx.compose.ui.Modifier
     import androidx.lifecycle.viewmodel.compose.viewModel
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
@@ -17,7 +18,8 @@ import com.example.eco_kids.view.CamionScreen
 import com.example.eco_kids.view.GamesScreen
 import com.example.eco_kids.view.MemoramaScreen
 import com.example.eco_kids.view.ProfileScreen
-import com.example.eco_kids.view.SplashScreen
+    import com.example.eco_kids.view.SnakeGame
+    import com.example.eco_kids.view.SplashScreen
 import com.example.eco_kids.view.WelcomeScreen
     import com.example.eco_kids.viewmodel.GameViewModel
     import com.example.eco_kids.viewmodel.UserViewModel
@@ -85,6 +87,9 @@ import com.example.eco_kids.view.WelcomeScreen
                         onGoToCamion = {
                             navController.navigate(Screen.Camion.route)
                         },
+                        onGoToSnake = {
+                            navController.navigate(Screen.Snake.route)
+                        },
                         userViewModel = userViewModel
                     )
                 }
@@ -119,6 +124,15 @@ import com.example.eco_kids.view.WelcomeScreen
 
                 composable(Screen.Camion.route) {
                     CamionScreen(
+                        onGoToGames = {
+                            navController.navigate(Screen.Games.route)
+                        },
+                        userViewModel = userViewModel
+                    )
+                }
+
+                composable(Screen.Snake.route) {
+                    SnakeGame(
                         onGoToGames = {
                             navController.navigate(Screen.Games.route)
                         },
