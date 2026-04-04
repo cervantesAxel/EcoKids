@@ -19,12 +19,21 @@ class WelcomeViewModel : ViewModel() {
         R.drawable.mascota_8,
         R.drawable.mascota_9
     )
+
+    var errorMensaje by mutableStateOf<String?>(null)
+        private set
+
     private val max_name = 10
     var nombre by mutableStateOf("")
     private set
     fun onNombreChange(value: String) {
-        if(value.length <= max_name) {
+        if (value.length <= max_name) {
             nombre = value
+            if (value.length < 10) {
+                errorMensaje = null
+            }
+        } else {
+            errorMensaje = "¡Ups! máximo $max_name caracteres"
         }
     }
 
@@ -32,5 +41,15 @@ class WelcomeViewModel : ViewModel() {
         private set
     fun onMascotaSeleccionadaChange(index: Int) {
         mascotaSeleccionada = index
+    }
+
+    // Dentro de WelcomeViewModel
+    fun validarAlContinuar(): Boolean {
+        return if (nombre.isBlank()) {
+            errorMensaje = "¡Por favor, escribe tu nombre!"
+            false
+        } else {
+            true
+        }
     }
 }

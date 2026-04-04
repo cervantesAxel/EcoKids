@@ -43,7 +43,7 @@ data class Residuo(val drawableId: Int, val tipo: String)
 @Composable
 fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         userViewModel: UserViewModel) {
-
+    var saliendo by remember { mutableStateOf(false) }
     //sonido
     val context = LocalContext.current
     val soundPool = remember {
@@ -213,20 +213,22 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
         if (vidas <= 0) isGameOver = true
     }
 
-    // Lógica de la caida del objeto    
-    LaunchedEffect(currentResiduo, isGameOver, showInstructions) {
-        if (!isGameOver && !showInstructions) {
-            while (offsetY < 1500f && !isGameOver) {
-                delay(16L)
-                offsetY += 8f
-                checkCollision()
-            }
+    // Lógica de la caida del objeto
+    LaunchedEffect(currentResiduo, isGameOver, showInstructions, saliendo) {
+        // Si estamos saliendo, NO hagas nada
+        if (isGameOver || showInstructions || saliendo) return@LaunchedEffect
 
-            if (!isGameOver) {
-                vidas--
-                if (vidas <= 0) isGameOver = true
-                else resetResiduo()
-            }
+        while (offsetY < 1500f && !isGameOver && !saliendo) {
+            delay(16L)
+            offsetY += 8f
+            checkCollision()
+        }
+
+        // SOLO resta vidas si NO estamos saliendo y el objeto de verdad cayó
+        if (offsetY >= 1500f && !isGameOver && !saliendo) {
+            vidas--
+            if (vidas <= 0) isGameOver = true
+            else resetResiduo()
         }
     }
 
@@ -382,7 +384,9 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
         if (showInstructions) {
             AlertDialog(
-                onDismissRequest = { onGoToGames() },
+                onDismissRequest = {
+                    showInstructions = false
+                    onGoToGames() },
                 confirmButton = {
                     Button(
                         onClick = {
@@ -405,7 +409,10 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                 },
                 dismissButton = {
                     Button(
-                        onClick = {onGoToGames()},
+                        onClick = {
+                            showInstructions = false
+                            onGoToGames()
+                                  },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFF9800),
                             contentColor = Color.White
@@ -486,8 +493,15 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
         if (isGameOver) {
             VictoryDialog(
                 score = puntos,
-                onRestart = { resetGame() },
-                onExit = { onGoToGames() }
+                onRestart = {
+                    saliendo = false // Asegúrate de que sea false al reiniciar
+                    resetGame()
+                },
+                onExit = {
+                    saliendo = true // <--- PRIMERO frenamos el código
+                    isGameOver = false
+                    onGoToGames()
+                }
             )
         }
     }

@@ -82,6 +82,7 @@ viewModel: GameViewModel,
 
     //variable para mostyrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
+    var isNavigatingOut by remember { mutableStateOf(false) }
 
     //mascota para mostrar
     val pet by userViewModel.userPet.collectAsState(initial = -1)
@@ -103,14 +104,19 @@ viewModel: GameViewModel,
     val memoramaViewModel: MemoramaViewModel = viewModel()
     val bestScore by memoramaViewModel.bestScore.collectAsState(initial = 0)
 
-    if (viewModel.showVictoryDialog) {
+    if (viewModel.showVictoryDialog && !isNavigatingOut) {
         LaunchedEffect(Unit) {
             memoramaViewModel.finishGame(viewModel.score)
         }
         VictoryDialog(
-            viewModel.score,
-            { viewModel.setupGame() },
-            { onGoToGames() }
+            score = viewModel.score,
+            onRestart = {
+                viewModel.setupGame()
+            },
+            onExit = {
+                isNavigatingOut = true // 1. Frenamos el renderizado del diálogo
+                onGoToGames()          // 2. Navegamos
+            }
         )
     }
 
@@ -169,7 +175,10 @@ viewModel: GameViewModel,
 
                         // Botón SALIR
                         Button(
-                            onClick = { onGoToGames() },
+                            onClick = {
+                                isNavigatingOut = true
+                                onGoToGames()
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFFF9800).copy(0.7f)
                             ),
@@ -301,7 +310,10 @@ viewModel: GameViewModel,
             },
             dismissButton = {
                 Button(
-                    onClick = {onGoToGames()},
+                    onClick = {
+                        showInstructions = false
+                        onGoToGames()
+                              },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFFF9800),
                         contentColor = Color.White

@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -66,7 +68,8 @@ fun WelcomeScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(
                         start = 0.dp,
                         top = 20.dp,
@@ -109,6 +112,14 @@ fun WelcomeScreen(
                     colorContainer = 0x00000000,
                     colorBorder = 0xFFB1E8DD
                 )
+                if (welcomeViewModel.errorMensaje != null) {
+                    Text(
+                        text = welcomeViewModel.errorMensaje!!,
+                        color = Color(0xFFD32F2F),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -141,7 +152,7 @@ fun WelcomeScreen(
                             containerColor = Color(0xFF6CB808)
                         ),
                         onClick = {
-                            if(welcomeViewModel.nombre.isNotBlank()) {
+                            if(welcomeViewModel.validarAlContinuar()) {
 
                                 val mascotaIndex = welcomeViewModel.mascotaSeleccionada
 
