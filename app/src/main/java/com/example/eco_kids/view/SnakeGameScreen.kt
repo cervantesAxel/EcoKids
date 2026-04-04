@@ -44,8 +44,8 @@ fun SnakeGame(
         R.drawable.lata
     )
     var direccionProcesada by remember { mutableStateOf(Offset(0f, -1f)) }
-    val filas = 15
-    val columnas = 15
+    val filas = 12
+    val columnas = 12
     var snakeBody by remember {
         mutableStateOf(listOf(Offset(7f, 7f), Offset(7f, 8f), Offset(7f, 9f)))
     }
