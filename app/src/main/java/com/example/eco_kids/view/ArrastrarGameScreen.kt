@@ -382,7 +382,9 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
         if (showInstructions) {
             AlertDialog(
-                onDismissRequest = { onGoToGames() },
+                onDismissRequest = {
+                    showInstructions = false
+                    onGoToGames() },
                 confirmButton = {
                     Button(
                         onClick = {
@@ -405,7 +407,10 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                 },
                 dismissButton = {
                     Button(
-                        onClick = {onGoToGames()},
+                        onClick = {
+                            showInstructions = false
+                            onGoToGames()
+                                  },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFF9800),
                             contentColor = Color.White
