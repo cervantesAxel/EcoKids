@@ -225,10 +225,10 @@ fun CamionScreen(
             )
         }
 
-        LaunchedEffect(juegoActivo, screenWidth, screenHeight) {
-            if (!juegoActivo || screenWidth == 0f) return@LaunchedEffect
+        LaunchedEffect(juegoActivo, screenWidth, screenHeight, showInstructions) {
+            if (!juegoActivo || screenWidth == 0f || showInstructions) return@LaunchedEffect
 
-            while (juegoActivo) {
+            while (juegoActivo && !showInstructions) {
                 delay(50)
 
                 lataY += 10
