@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
@@ -374,7 +375,7 @@ viewModel: GameViewModel,
         )
     }
 }
-// --- CARTA CON ANIMACIÓN 3D (Se mantiene igual) ---
+
 @Composable
 fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
     val rotation by animateFloatAsState(
@@ -386,35 +387,74 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .aspectRatio(1f)
+            .padding(4.dp) // Espaciado extra para que la sombra se vea bien
             .graphicsLayer {
                 rotationY = rotation
-                cameraDistance = 12f * density
+                cameraDistance = 14f * density
             }
             .clickable { onClick() }
     ) {
         if (rotation <= 90f) {
+            // --- PARTE TRASERA (BOCA ABAJO) ---
             Card(
                 modifier = Modifier.fillMaxSize(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF8BC34A)),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                border = androidx.compose.foundation.BorderStroke(3.dp, Color(0xFF689F38)), // Borde verde oscuro
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF8BC34A))
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("?", fontSize = 32.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(Color(0xFF9CCC65), Color(0xFF7CB342))
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Un ícono de reciclaje tenue de fondo para dar textura
+                    Icon(
+                        painter = painterResource(id = R.drawable.again), // O un ícono de reciclaje
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp).alpha(0.2f),
+                        tint = Color.White
+                    )
+
+                    Text(
+                        text = "?",
+                        fontSize = 40.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        style = TextStyle(
+                            shadow = Shadow(
+                                color = Color.Black.copy(alpha = 0.3f),
+                                offset = Offset(2f, 4f),
+                                blurRadius = 8f
+                            )
+                        )
+                    )
                 }
             }
         } else {
+            // --- PARTE FRONTAL (BOCA ARRIBA) ---
             Card(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer { rotationY = 180f },
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFE0E0E0)),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Image(
                         painter = painterResource(id = card.imageRes),
                         contentDescription = null,
-                        modifier = Modifier.padding(8.dp).fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }
