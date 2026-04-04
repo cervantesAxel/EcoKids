@@ -167,7 +167,7 @@ fun GamesScreen (
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 GameCard(R.drawable.banner_camion, "Camion recolector") {
-                    onGoToCamion() //navegacion pendiente
+                    onGoToCamion()
                 }
 
             }
