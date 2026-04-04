@@ -63,6 +63,8 @@ fun CamionScreen(
 
     //variable para mostyrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
+    var velocidad by remember { mutableFloatStateOf(10f) }
+    var frames by remember { mutableIntStateOf(0) }
 
     //mascota para mostrar
     val pet by userViewModel.userPet.collectAsState(initial = -1)
@@ -231,10 +233,15 @@ fun CamionScreen(
             while (juegoActivo && !showInstructions) {
                 delay(50)
 
-                lataY += 10
-                manzanaY += 12
-                basuraY += 10
-                basura2Y += 12
+                frames++
+                if (frames % 100 == 0) { // Cada 100 ciclos (aprox 5 seg), aumenta la velocidad
+                    velocidad += 1f
+                }
+
+                lataY += velocidad
+                manzanaY += velocidad + 1 // La manzana sigue siendo un poco más rápida
+                basuraY += velocidad
+                basura2Y += velocidad + 1
 
                 if (basuraY > screenHeight) {
                     basuraY = -200f
@@ -332,7 +339,10 @@ fun CamionScreen(
                         manzanaX = Random.nextInt(0, (screenWidth - 60).toInt()).toFloat()
                     }
                 },
-                onExit = onGoToGames
+                onExit = {
+                    showGameOverDialog = false
+                    onGoToGames()
+                }
             )
         }
     }
