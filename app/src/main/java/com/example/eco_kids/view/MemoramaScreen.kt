@@ -51,6 +51,10 @@ fun MemoramaScreen(onGoToGames: () -> Unit,
 viewModel: GameViewModel,
                    userViewModel: UserViewModel
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.setupGame()
+        // Si tienes una variable local para instrucciones, asegúrate que inicie en true
+    }
 
     //sonido declaraciones
     val context = LocalContext.current
@@ -115,6 +119,7 @@ viewModel: GameViewModel,
                 viewModel.setupGame()
             },
             onExit = {
+                viewModel.resetGameForNavigation()
                 isNavigatingOut = true // 1. Frenamos el renderizado del diálogo
                 onGoToGames()          // 2. Navegamos
             }
@@ -177,6 +182,7 @@ viewModel: GameViewModel,
                         // Botón SALIR
                         Button(
                             onClick = {
+                                viewModel.resetGameForNavigation()
                                 isNavigatingOut = true
                                 onGoToGames()
                             },
@@ -387,7 +393,7 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .aspectRatio(1f)
-            .padding(4.dp) // Espaciado extra para que la sombra se vea bien
+            .padding(4.dp)
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 14f * density
@@ -395,7 +401,6 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         if (rotation <= 90f) {
-            // --- PARTE TRASERA (BOCA ABAJO) ---
             Card(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(12.dp),
@@ -413,7 +418,6 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Un ícono de reciclaje tenue de fondo para dar textura
                     Icon(
                         painter = painterResource(id = R.drawable.again), // O un ícono de reciclaje
                         contentDescription = null,
@@ -437,7 +441,6 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
                 }
             }
         } else {
-            // --- PARTE FRONTAL (BOCA ARRIBA) ---
             Card(
                 modifier = Modifier
                     .fillMaxSize()

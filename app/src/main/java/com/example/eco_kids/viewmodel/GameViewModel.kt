@@ -34,11 +34,18 @@ class GameViewModel : ViewModel() {
         setupGame()
     }
 
+    fun resetGameForNavigation() {
+        showVictoryDialog = false
+        isProcessing = false
+        cards.clear()
+    }
+
     fun setupGame() {
         score = 0
         matchesFound = 0
         plasticCount = 0; paperCount = 0; organicCount = 0
         showVictoryDialog = false
+        _isMatch.value = false
         firstSelectedCardIndex = null
         isProcessing = false
         cards.clear()
