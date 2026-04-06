@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.getSystemService
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eco_kids.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
@@ -73,6 +74,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
     //variable para mostrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
+    var isNavigatingOut by remember { mutableStateOf(false) }
 
     //mascota para mostrar
     val pet by userViewModel.userPet.collectAsState(initial = -1)
@@ -111,6 +113,8 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
         Residuo(R.drawable.org_lechuga,"organico"),
         Residuo(R.drawable.org_manzana,"organico"),
         Residuo(R.drawable.org_cascara,"organico"),
+        Residuo(R.drawable.org_te,"organico"),
+        Residuo(R.drawable.org_papa,"organico"),
 
 
         Residuo(R.drawable.pap_cafe,"papel"),
@@ -158,6 +162,8 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
         isGameOver = false
         resetResiduo()
     }
+
+
 
     fun zonaDeCaptura(bounds: Rect?): Rect? {
         return bounds?.inflate(60f)
@@ -282,7 +288,11 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
 
                         // Botón regresar
                         Button(
-                            onClick = { onGoToGames() },
+                            onClick = {
+                                resetGame()
+                                isNavigatingOut = true
+                                onGoToGames()
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFFF9800).copy(0.8f)
                             ),

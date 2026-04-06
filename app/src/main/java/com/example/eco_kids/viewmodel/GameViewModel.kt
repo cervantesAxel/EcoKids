@@ -52,19 +52,31 @@ class GameViewModel : ViewModel() {
 
         // DATOS: Asegúrate que coincidan con tus imágenes en res/drawable
         val rawData = listOf(
-            Pair(R.drawable.botella, TrashType.PLASTIC),
-            Pair(R.drawable.boteverde, TrashType.PLASTIC),
+            Pair(R.drawable.pet_yogurt, TrashType.PLASTIC),
+            Pair(R.drawable.pet_tapas, TrashType.PLASTIC),
             Pair(R.drawable.pet_botella, TrashType.PLASTIC),
+            Pair(R.drawable.pet_vaso, TrashType.PLASTIC),
+            Pair(R.drawable.pet_cuchara, TrashType.PLASTIC),
+            Pair(R.drawable.pet_vaso, TrashType.PLASTIC),
 
             Pair(R.drawable.pap_caja, TrashType.PAPER),
-            Pair(R.drawable.grayslata, TrashType.PAPER),
+            Pair(R.drawable.pap_cajas, TrashType.PAPER),
             Pair(R.drawable.pap_cafe, TrashType.PAPER),
             Pair(R.drawable.pap_libros, TrashType.PAPER),
+            Pair(R.drawable.pap_cereal, TrashType.PAPER),
+            Pair(R.drawable.pap_rollo, TrashType.PAPER),
+            Pair(R.drawable.pap_sobre, TrashType.PAPER),
+            Pair(R.drawable.pap_periodico, TrashType.PAPER),
 
-            Pair(R.drawable.platano, TrashType.ORGANIC),
+            Pair(R.drawable.org_papa, TrashType.ORGANIC),
             Pair(R.drawable.org_lechuga, TrashType.ORGANIC),
             Pair(R.drawable.org_manzana, TrashType.ORGANIC),
             Pair(R.drawable.org_hoja, TrashType.ORGANIC),
+            Pair(R.drawable.org_flor, TrashType.ORGANIC),
+            Pair(R.drawable.org_aguacate, TrashType.ORGANIC),
+            Pair(R.drawable.org_banano, TrashType.ORGANIC),
+            Pair(R.drawable.org_te, TrashType.ORGANIC),
+
 
 
             )
@@ -97,6 +109,9 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    fun resetMatch() {
+        _isMatch.value = false
+    }
     private fun checkForMatch(index1: Int, index2: Int) {
         isProcessing = true // Bloqueamos
 

@@ -47,9 +47,10 @@ import com.example.eco_kids.viewmodel.UserViewModel
 import com.example.eco_kids.viewmodel.WelcomeViewModel
 
 @Composable
-fun MemoramaScreen(onGoToGames: () -> Unit,
-viewModel: GameViewModel,
-                   userViewModel: UserViewModel
+fun MemoramaScreen(
+    onGoToGames: () -> Unit,
+    viewModel: GameViewModel,
+    userViewModel: UserViewModel
 ) {
     LaunchedEffect(Unit) {
         viewModel.setupGame()
@@ -75,6 +76,7 @@ viewModel: GameViewModel,
     LaunchedEffect(viewModel.isMatch.value) {
         if (viewModel.isMatch.value) {
             soundPool.play(soundCorrect, 1f, 1f, 0, 0, 1f)
+            viewModel.resetMatch()
         }
     }
 
@@ -187,7 +189,7 @@ viewModel: GameViewModel,
                                 onGoToGames()
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFFF9800).copy(0.7f)
+                                containerColor = Color(0xFFFF9800).copy(0.8f)
                             ),
                             shape = CircleShape,
                             modifier = Modifier.size(50.dp),

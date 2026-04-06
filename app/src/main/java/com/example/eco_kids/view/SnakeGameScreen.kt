@@ -3,17 +3,32 @@ package com.example.eco_kids.view
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,12 +39,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eco_kids.R
+import com.example.eco_kids.viewmodel.SnakeViewModel
 import com.example.eco_kids.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
@@ -39,6 +59,31 @@ fun SnakeGame(
     onGoToGames: () -> Unit,
     userViewModel: UserViewModel
 ) {
+
+    //variable para mostrar instrucciones
+    var showInstructions by remember { mutableStateOf(true) }
+    var isNavigatingOut by remember { mutableStateOf(false) }
+
+    //mascota para mostrar
+    val pet by userViewModel.userPet.collectAsState(initial = -1)
+    val name by userViewModel.userName.collectAsState(initial = "")
+    val snakeViewModel: SnakeViewModel = viewModel()
+    val bestScore by snakeViewModel.bestScore.collectAsState()
+
+    val mascotas = listOf(
+        R.drawable.mascota_1,
+        R.drawable.mascota_2,
+        R.drawable.mascota_3,
+        R.drawable.mascota_4,
+        R.drawable.mascota_5,
+        R.drawable.mascota_6,
+        R.drawable.mascota_7,
+        R.drawable.mascota_8,
+        R.drawable.mascota_9
+    )
+
+
+    val selectedPet = mascotas.getOrNull(pet)
     val tiposDeResiduos = listOf(
         R.drawable.pet_botella,
         R.drawable.lata
@@ -86,6 +131,10 @@ fun SnakeGame(
                 snakeBody.contains(nuevaCabeza)) {
                 gameActive = false
                 showGameOverDialog = true
+
+                //guarda mejor puntaje al finalizar
+                snakeViewModel.finishGame(puntos)
+
                 break
             }
 
@@ -102,7 +151,9 @@ fun SnakeGame(
     }
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().background(Color.Black)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
             .pointerInput(gameActive) {
                 if (!gameActive) return@pointerInput
                 detectDragGestures { change, dragAmount ->
@@ -118,7 +169,9 @@ fun SnakeGame(
                 }
             }
     ) {
-        val totalMaxWidth = maxWidth
+
+        val headerHeight = maxHeight * 0.10f
+        val maxWidth = this.maxWidth
 
         Image(
             painter = painterResource(id = R.drawable.fondo_pantalla4),
@@ -127,67 +180,165 @@ fun SnakeGame(
             contentScale = ContentScale.Crop
         )
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(16.dp)
-                .aspectRatio(1f)
-                .shadow(12.dp, RoundedCornerShape(16.dp))
-                .background(Color(0xFF012E40).copy(alpha = 0.9f), RoundedCornerShape(16.dp)) //CAMBIAR ESTO PARA EL COLOR IRIS ALEXIA
-                .clip(RoundedCornerShape(16.dp))
-
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val boardWidthPx = with(androidx.compose.ui.platform.LocalDensity.current) {
-                (totalMaxWidth - 32.dp).toPx()
-            }
-            val cellSize = boardWidthPx / columnas
 
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val linePaint = Color.White.copy(alpha = 0.1f)
-                for (i in 0..columnas) {
-                    drawLine(linePaint, Offset(i * cellSize, 0f), Offset(i * cellSize, size.height), 1.dp.toPx())
-                }
-                for (i in 0..filas) {
-                    drawLine(linePaint, Offset(0f, i * cellSize), Offset(size.width, i * cellSize), 1.dp.toPx())
-                }
-
-                snakeBody.forEachIndexed { index, segment ->
-                    drawRect(
-                        color = if (index == 0) Color(0xFF8BC34A) else Color(0xFF4CAF50),
-                        topLeft = Offset(segment.x * cellSize + 1.dp.toPx(), segment.y * cellSize + 1.dp.toPx()),
-                        size = androidx.compose.ui.geometry.Size(cellSize - 2.dp.toPx(), cellSize - 2.dp.toPx())
-                    )
-                }
-            }
-
-            Image(
-                painter = painterResource(id = currentResiduoIcon),
-                contentDescription = null,
+            // ZONA DE LA BARRA
+            Box(
                 modifier = Modifier
-                    .size(with(androidx.compose.ui.platform.LocalDensity.current) { cellSize.toDp() })
-                    .offset(
-                        x = with(androidx.compose.ui.platform.LocalDensity.current) { (comidaPos.x * cellSize).toDp() },
-                        y = with(androidx.compose.ui.platform.LocalDensity.current) { (comidaPos.y * cellSize).toDp() }
-                    )
-                    .padding(2.dp)
-            )
-        }
+                    .fillMaxWidth(0.95f)
+                    .height(headerHeight)
+                    .padding(top = maxWidth * 0.05f)
+                    .shadow(12.dp, RoundedCornerShape(20.dp))
+                    .clip(RoundedCornerShape(20.dp))
+            ) {
 
-        if (showGameOverDialog) {
-            VictoryDialog(
-                score = puntos,
-                onRestart = {
-                    snakeBody = listOf(Offset(7f, 7f), Offset(7f, 8f), Offset(7f, 9f))
-                    direccion = Offset(0f, -1f)
-                    puntos = 0
-                    showGameOverDialog = false
-                    gameActive = true
-                },
-                onExit = {
-                    showGameOverDialog = false
-                    onGoToGames()
+                Image(
+                    painter = painterResource(id = R.drawable.barra_games2),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    // Botón regresar
+                    Button(
+                        onClick = {
+
+                            isNavigatingOut = true
+                            onGoToGames()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800).copy(0.8f)
+                        ),
+                        shape = CircleShape,
+                        modifier = Modifier.size(50.dp),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+
+                    // Puntos
+                    Text(
+                        text = "Puntos: $puntos",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF107214)
+                    )
+
+                    // Vidas
+                    Text(
+                        text = "Récord: $bestScore",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF01586C)
+                    )
+
                 }
-            )
+            }
+
+
+                    // AKI EMPIEZA EL JUEGO
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(16.dp)
+                            .aspectRatio(1f)
+                            .shadow(12.dp, RoundedCornerShape(16.dp))
+                            .background(
+                                Color(0xFF012E40).copy(alpha = 0.9f),
+                                RoundedCornerShape(16.dp)
+                            )
+                            .border(5.dp, Color(0xFF2E7D32), RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp))
+                    ) {
+
+                        val boardWidthPx = with(androidx.compose.ui.platform.LocalDensity.current) {
+                            (maxWidth - 32.dp).toPx()
+                        }
+                        val cellSize = boardWidthPx / columnas
+
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            val linePaint = Color.White.copy(alpha = 0.1f)
+
+                            for (row in 0 until filas) {
+                                for (col in 0 until columnas) {
+
+                                    val isEven = (row + col) % 2 == 0
+
+                                    drawRect(
+                                        color = if (isEven)
+                                            Color(0xFFAAD751)   //cuadricula verde claro
+                                        else
+                                            Color(0xFFA2D149),  // aki va un ver más oscuro
+                                        topLeft = Offset(
+                                            col * cellSize,
+                                            row * cellSize
+                                        ),
+                                        size = Size(cellSize, cellSize)
+                                    )
+                                }
+                            }
+
+                            snakeBody.forEachIndexed { index, segment ->
+                                drawRoundRect(
+                                    color = if (index == 0) Color(0xFF8BC34A) else Color(0xFF4CAF50),
+                                    topLeft = Offset(
+                                        segment.x * cellSize + 1.dp.toPx(),
+                                        segment.y * cellSize + 1.dp.toPx()
+                                    ),
+                                    size = androidx.compose.ui.geometry.Size(
+                                        cellSize - 2.dp.toPx(),
+                                        cellSize - 2.dp.toPx()
+                                    )
+                                )
+                            }
+                        }
+
+                        Image(
+                            painter = painterResource(id = currentResiduoIcon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(with(androidx.compose.ui.platform.LocalDensity.current) { cellSize.toDp() })
+                                .offset(
+                                    x = with(androidx.compose.ui.platform.LocalDensity.current) { (comidaPos.x * cellSize).toDp() },
+                                    y = with(androidx.compose.ui.platform.LocalDensity.current) { (comidaPos.y * cellSize).toDp() }
+                                )
+                        )
+                    }
+                }
+
+                // 🪟 GAME OVER
+                if (showGameOverDialog) {
+                    VictoryDialog(
+                        score = puntos,
+                        onRestart = {
+                            snakeBody = listOf(Offset(7f, 7f), Offset(7f, 8f), Offset(7f, 9f))
+                            direccion = Offset(0f, -1f)
+                            puntos = 0
+                            showGameOverDialog = false
+                            gameActive = true
+                        },
+                        onExit = {
+                            showGameOverDialog = false
+                            onGoToGames()
+                        }
+                    )
+                }
         }
     }
-}
+
