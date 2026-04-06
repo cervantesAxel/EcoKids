@@ -3,8 +3,11 @@ package com.example.eco_kids.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -136,14 +140,14 @@ fun CamionScreen(
         val camionY = screenHeight - camionHeight.toFloat() + offsetYPx
 
         Image(
-            painter = painterResource(R.drawable.fondo),
+            painter = painterResource(R.drawable.fondo_carretera2   ),
             contentDescription = "fondo",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
         Image(
-            painter = painterResource(R.drawable.botella),
+            painter = painterResource(R.drawable.pet_botella),
             contentDescription = "basura",
             modifier = Modifier
                 .size(80.dp)
@@ -151,10 +155,10 @@ fun CamionScreen(
         )
 
         Image(
-            painter = painterResource(R.drawable.camion),
+            painter = painterResource(R.drawable.camion4),
             contentDescription = "camion",
             modifier = Modifier
-                .size(120.dp)
+                .size(140.dp)
                 .offset { IntOffset(camionX.toInt(), camionY.toInt()) }
                 .onGloballyPositioned { coordinates ->
                     camionWidth = coordinates.size.width
@@ -163,7 +167,7 @@ fun CamionScreen(
         )
 
         Image(
-            painter = painterResource(R.drawable.cascara),
+            painter = painterResource(R.drawable.org_banano),
             contentDescription = "basura2",
             modifier = Modifier
                 .size(60.dp)
@@ -179,53 +183,84 @@ fun CamionScreen(
         )
 
         Image(
-            painter = painterResource(R.drawable.manzana),
+            painter = painterResource(R.drawable.org_manzana),
             contentDescription = "manzana",
             modifier = Modifier
                 .size(60.dp)
                 .offset { IntOffset(manzanaX.toInt(), manzanaY.toInt()) }
         )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .padding(top = 16.dp)
-                .shadow(
-                    elevation = 12.dp,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .clip(RoundedCornerShape(20.dp))
-                .align(Alignment.TopCenter)
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.barra_games2),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                contentScale = ContentScale.Crop
-            )
+            val maxWidth = this.maxWidth
+            val headerHeight = maxHeight * 0.10f
 
-            Text(
-                text = "Puntos: $puntos",
-                fontSize = 20.sp,
-                color = Color(0xFF107214),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = 20.dp)
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .height(headerHeight)
+                        .padding(top = maxWidth * 0.050f)
+                        .shadow(
+                            elevation = 12.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            ambientColor = Color.Black.copy(alpha = 0.2f),
+                            spotColor = Color.Black.copy(alpha = 0.15f)
+                        )
+                        .clip(RoundedCornerShape(20.dp))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.barra_games2),
+                        contentDescription = "Imagen barra",
+                        modifier = Modifier.fillMaxSize()
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Botón regresar
+                        Button(
+                            onClick = { onGoToGames() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFFF9800).copy(0.8f)
+                            ),
+                            shape = CircleShape,
+                            modifier = Modifier.size(45.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
 
-            Text(
-                text = "Vidas: $vidas",
-                fontSize = 20.sp,
-                color = Color.Red,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 20.dp)
-            )
-        }
+                        // Puntos
+                        Text(
+                            text = "Puntos: $puntos",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF107214)
+                        )
+
+                        // Vidas
+                        Text(
+                            text = "Vidas: $vidas",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF01586C)
+                        )
+                    }
+                }
+
 
         LaunchedEffect(juegoActivo, screenWidth, screenHeight, showInstructions) {
             if (!juegoActivo || screenWidth == 0f || showInstructions) return@LaunchedEffect
@@ -346,6 +381,9 @@ fun CamionScreen(
             )
         }
     }
+}
+}
+
     if (showInstructions) {
         AlertDialog(
             onDismissRequest = {  },

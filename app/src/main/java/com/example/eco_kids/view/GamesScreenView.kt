@@ -1,5 +1,7 @@
 package com.example.eco_kids.view
 
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -144,35 +146,33 @@ fun GamesScreen (
                 }
             }
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            //zona de los juegos
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = headerHeight +  60.dp)
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(22.dp)  // Espaciado de cada gamecard
+                ) {
+                    Text(
+                        text = "Mis Juegos",
+                        color = Color(0xFF01586C),
+                        fontSize = (maxWidth.value * 0.065f).sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
 
-                Text(
-                    text = "Mis Juegos",
-                    color = Color(0xFF01586C),
-                    fontSize = (maxWidth.value * 0.07f).sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    GameCard(R.drawable.memorama_banner, "Memorama") { onGoToMemorama() }
+                    GameCard(R.drawable.atrapabasura_banner, "Atrapa Basura") { onGotoArrastrar() }
+                    GameCard(R.drawable.banner_camion, "Camion recolector") { onGoToCamion() }
+                    GameCard(R.drawable.banner_camion, "SnakeCode") { onGoToSnake() }
 
-                Spacer(modifier = Modifier.height(maxHeight * 0.04f))
-
-                GameCard(R.drawable.memorama_banner, "Memorama") {
-                    onGoToMemorama()
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                GameCard(R.drawable.atrapabasura_banner, "Atrapa Basura") {
-                    onGotoArrastrar()
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                GameCard(R.drawable.banner_camion, "Camion recolector") {
-                    onGoToCamion()
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                GameCard(R.drawable.banner_camion, "Camion recolector") {
-                    onGoToSnake()
+                    Spacer(modifier = Modifier.height(60.dp))
                 }
             }
         }
