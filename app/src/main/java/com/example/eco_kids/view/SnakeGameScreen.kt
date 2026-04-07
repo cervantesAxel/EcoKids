@@ -329,7 +329,7 @@ fun SnakeGame(
 
                             snakeBody.forEachIndexed { index, segment ->
                                 drawRoundRect(
-                                    color = if (index == 0) Color(0xFF057B93) else Color(0xFF3A93A8),
+                                    color = if (index == 0) Color(0xFF188BA4) else Color(0xFF01586C),
                                     topLeft = Offset(
                                         segment.x * cellSize + 1.dp.toPx(),
                                         segment.y * cellSize + 1.dp.toPx()

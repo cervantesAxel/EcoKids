@@ -170,7 +170,7 @@ fun GamesScreen (
                     GameCard(R.drawable.memorama_banner, "Memorama") { onGoToMemorama() }
                     GameCard(R.drawable.atrapabasura_banner, "Atrapa Basura") { onGotoArrastrar() }
                     GameCard(R.drawable.banner_camion, "Camion recolector") { onGoToCamion() }
-                    GameCard(R.drawable.banner_camion, "SnakeCode") { onGoToSnake() }
+                    GameCard(R.drawable.banner_snake, "SnakeCode") { onGoToSnake() }
 
                     Spacer(modifier = Modifier.height(60.dp))
                 }

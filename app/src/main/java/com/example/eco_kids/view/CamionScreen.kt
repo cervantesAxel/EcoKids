@@ -175,7 +175,7 @@ fun CamionScreen(
         )
 
         Image(
-            painter = painterResource(R.drawable.lata),
+            painter = painterResource(R.drawable.pap_manzana),
             contentDescription = "lata",
             modifier = Modifier
                 .size(60.dp)
