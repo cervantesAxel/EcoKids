@@ -1,5 +1,6 @@
 package com.example.eco_kids.view
 
+import android.media.SoundPool
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,22 +12,31 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,8 +53,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -59,6 +71,29 @@ fun SnakeGame(
     onGoToGames: () -> Unit,
     userViewModel: UserViewModel
 ) {
+    //sonido declaraciones
+    val context = LocalContext.current
+    val soundPool = remember {
+        SoundPool.Builder().setMaxStreams(2).build()
+    }
+
+    val soundCorrect = remember {
+        soundPool.load(context, R.raw.sonido_snake, 1)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundPool.release()
+        }
+    }
+
+    var soundLoaded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        soundPool.setOnLoadCompleteListener { _, _, status ->
+            soundLoaded = status == 0
+        }
+    }
 
     //variable para mostrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
@@ -115,37 +150,45 @@ fun SnakeGame(
         currentResiduoIcon = tiposDeResiduos.random()
     }
 
-    LaunchedEffect(gameActive) {
-        while (gameActive) {
-            delay(200) //Para cambiar la velocidad de la serpiente IRIS ALEXIA
-            direccionProcesada = direccion
+    LaunchedEffect(gameActive, showInstructions) {
+        if (gameActive && !showInstructions) {
+            delay(500) //para q no empiece luego luego
+            while (gameActive) {
+                delay(200) //Para cambiar la velocidad de la serpiente IRIS ALEXIA
+                direccionProcesada = direccion
 
-            val cabezaActual = snakeBody.first()
-            val nuevaCabeza = Offset(
-                x = cabezaActual.x + direccion.x,
-                y = cabezaActual.y + direccion.y
-            )
+                val cabezaActual = snakeBody.first()
+                val nuevaCabeza = Offset(
+                    x = cabezaActual.x + direccion.x,
+                    y = cabezaActual.y + direccion.y
+                )
 
-            if (nuevaCabeza.x < 0 || nuevaCabeza.x >= columnas ||
-                nuevaCabeza.y < 0 || nuevaCabeza.y >= filas ||
-                snakeBody.contains(nuevaCabeza)) {
-                gameActive = false
-                showGameOverDialog = true
+                if (nuevaCabeza.x < 0 || nuevaCabeza.x >= columnas ||
+                    nuevaCabeza.y < 0 || nuevaCabeza.y >= filas ||
+                    snakeBody.contains(nuevaCabeza)
+                ) {
+                    gameActive = false
+                    showGameOverDialog = true
 
-                //guarda mejor puntaje al finalizar
-                snakeViewModel.finishGame(puntos)
+                    //guarda mejor puntaje al finalizar
+                    snakeViewModel.finishGame(puntos)
 
-                break
-            }
+                    break
+                }
 
-            if (nuevaCabeza.x.toInt() == comidaPos.x.toInt() &&
-                nuevaCabeza.y.toInt() == comidaPos.y.toInt()) {
+                if (nuevaCabeza.x.toInt() == comidaPos.x.toInt() &&
+                    nuevaCabeza.y.toInt() == comidaPos.y.toInt()
+                ) {
 
-                puntos += 10
-                snakeBody = listOf(nuevaCabeza) + snakeBody
-                generarComida(snakeBody)
-            } else {
-                snakeBody = listOf(nuevaCabeza) + snakeBody.dropLast(1)
+                    if (soundLoaded) {
+                        soundPool.play(soundCorrect, 1f, 1f, 1, 0, 1f)
+                    }
+                    puntos += 10
+                    snakeBody = listOf(nuevaCabeza) + snakeBody
+                    generarComida(snakeBody)
+                } else {
+                    snakeBody = listOf(nuevaCabeza) + snakeBody.dropLast(1)
+                }
             }
         }
     }
@@ -154,8 +197,8 @@ fun SnakeGame(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .pointerInput(gameActive) {
-                if (!gameActive) return@pointerInput
+            .pointerInput(gameActive,showInstructions) {
+                if (!gameActive || showInstructions) return@pointerInput
                 detectDragGestures { change, dragAmount ->
                     change.consume()
                     val (x, y) = dragAmount
@@ -322,6 +365,94 @@ fun SnakeGame(
                     }
                 }
 
+        if (showInstructions) {
+            AlertDialog(
+                onDismissRequest = {  },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showInstructions = false
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        androidx.compose.material3.Text("¡Jugar!")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showInstructions = false
+                            onGoToGames()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        androidx.compose.material3.Text("Regresar", color = Color.White)
+                    }
+                },
+                title = {
+                    androidx.compose.material3.Text("¿Cómo Jugar?")
+                },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Imagen de la mascota
+                        selectedPet?.let { petRes ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth()
+                                    .height(100.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFFA3DBDE)
+                                ),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                            ) {
+                                Row(modifier = Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        painter = painterResource(id = petRes),
+                                        contentDescription = "Mascota",
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(12.dp)
+                                    )
+
+                                    androidx.compose.material3.Text(
+                                        text = "¡Recolecta toda la basura y evita chocar con tu cola o las paredes!",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF01586C),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                },
+                containerColor = Color(0xFFFEFBE8),
+                shape = RoundedCornerShape(20.dp)
+            )
+        }
                 // 🪟 GAME OVER
                 if (showGameOverDialog) {
                     VictoryDialog(

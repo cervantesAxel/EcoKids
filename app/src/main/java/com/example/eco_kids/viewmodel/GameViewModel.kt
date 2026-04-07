@@ -57,7 +57,18 @@ class GameViewModel : ViewModel() {
             Pair(R.drawable.pet_botella, TrashType.PLASTIC),
             Pair(R.drawable.pet_vaso, TrashType.PLASTIC),
             Pair(R.drawable.pet_cuchara, TrashType.PLASTIC),
-            Pair(R.drawable.pet_vaso, TrashType.PLASTIC),
+            Pair(R.drawable.pet_bolsa, TrashType.PLASTIC),
+            Pair(R.drawable.pet_detergente, TrashType.PLASTIC),
+            Pair(R.drawable.pet_coca, TrashType.PLASTIC),
+            Pair(R.drawable.pet_envase, TrashType.PLASTIC),
+            Pair(R.drawable.pet_yogurt2, TrashType.PLASTIC),
+            Pair(R.drawable.pet_film, TrashType.PLASTIC),
+            Pair(R.drawable.pet_garrafon, TrashType.PLASTIC),
+            Pair(R.drawable.pet_helado, TrashType.PLASTIC),
+            Pair(R.drawable.pet_popote, TrashType.PLASTIC),
+            Pair(R.drawable.pet_bolsasan, TrashType.PLASTIC),
+            Pair(R.drawable.pet_jabon, TrashType.PLASTIC),
+            Pair(R.drawable.pet_leche, TrashType.PLASTIC),
 
             Pair(R.drawable.pap_caja, TrashType.PAPER),
             Pair(R.drawable.pap_cajas, TrashType.PAPER),
@@ -67,6 +78,13 @@ class GameViewModel : ViewModel() {
             Pair(R.drawable.pap_rollo, TrashType.PAPER),
             Pair(R.drawable.pap_sobre, TrashType.PAPER),
             Pair(R.drawable.pap_periodico, TrashType.PAPER),
+            Pair(R.drawable.pap_bolsa, TrashType.PAPER),
+            Pair(R.drawable.pap_cajahuevo, TrashType.PAPER),
+            Pair(R.drawable.pap_cajazapatos, TrashType.PAPER),
+            Pair(R.drawable.pap_caja2, TrashType.PAPER),
+            Pair(R.drawable.pap_cartonpizza, TrashType.PAPER),
+            Pair(R.drawable.pap_jugo, TrashType.PAPER),
+            Pair(R.drawable.pap_manzana, TrashType.PAPER),
 
             Pair(R.drawable.org_papa, TrashType.ORGANIC),
             Pair(R.drawable.org_lechuga, TrashType.ORGANIC),
@@ -76,9 +94,15 @@ class GameViewModel : ViewModel() {
             Pair(R.drawable.org_aguacate, TrashType.ORGANIC),
             Pair(R.drawable.org_banano, TrashType.ORGANIC),
             Pair(R.drawable.org_te, TrashType.ORGANIC),
-
-
-
+            Pair(R.drawable.org_huevo, TrashType.ORGANIC),
+            Pair(R.drawable.org_limon, TrashType.ORGANIC),
+            Pair(R.drawable.org_restos, TrashType.ORGANIC),
+            Pair(R.drawable.org_residuos, TrashType.ORGANIC),
+            Pair(R.drawable.org_naranja, TrashType.ORGANIC),
+            Pair(R.drawable.org_pez, TrashType.ORGANIC),
+            Pair(R.drawable.org_sandia, TrashType.ORGANIC),
+            Pair(R.drawable.org_semillas, TrashType.ORGANIC),
+            Pair(R.drawable.org_manzanamordida, TrashType.ORGANIC),
             )
         totalPairs = rawData.size
 

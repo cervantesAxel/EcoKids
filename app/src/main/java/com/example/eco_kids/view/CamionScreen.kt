@@ -183,7 +183,7 @@ fun CamionScreen(
         )
 
         Image(
-            painter = painterResource(R.drawable.org_manzana),
+            painter = painterResource(R.drawable.org_manzanamordida),
             contentDescription = "manzana",
             modifier = Modifier
                 .size(60.dp)

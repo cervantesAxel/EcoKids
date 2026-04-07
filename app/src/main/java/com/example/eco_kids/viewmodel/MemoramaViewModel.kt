@@ -27,9 +27,9 @@ class MemoramaViewModel (
 
     private fun loadBestScore (){
         viewModelScope.launch {
-            val userName = userDataStore.userName.first() ?: return@launch
+            val userId = userDataStore.userId.first() ?: return@launch
 
-            gamesDataStore.getBestScore(userName, "memorama")
+            gamesDataStore.getBestScore(userId, "memorama")
                 .collect { score ->
                     bestScore.value = score
                 }
@@ -38,10 +38,10 @@ class MemoramaViewModel (
 
     fun finishGame (score:Int){
         viewModelScope.launch {
-            val userName = userDataStore.userName.first() ?: return@launch
+            val userId = userDataStore.userId.first() ?: return@launch
 
             gamesDataStore.saveScore(
-                userName= userName,
+                userId = userId,
                 gameName = "memorama",
                 score = score
             )

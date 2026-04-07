@@ -23,9 +23,9 @@ class SnakeViewModel (
 
     private fun loadBestScore (){
         viewModelScope.launch {
-            val userName = userDataStore.userName.first() ?: return@launch
+            val userId = userDataStore.userId.first() ?: return@launch
 
-            gamesDataStore.getBestScore(userName, "snake")
+            gamesDataStore.getBestScore(userId, "snake")
                 .collect { score ->
                     bestScore.value = score
                 }
@@ -34,10 +34,10 @@ class SnakeViewModel (
 
     fun finishGame (score:Int){
         viewModelScope.launch {
-            val userName = userDataStore.userName.first() ?: return@launch
+            val userId = userDataStore.userId.first() ?: return@launch
 
             gamesDataStore.saveScore(
-                userName= userName,
+                userId = userId,
                 gameName = "snake",
                 score = score
             )
