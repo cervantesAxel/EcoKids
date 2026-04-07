@@ -87,14 +87,6 @@ fun SnakeGame(
         }
     }
 
-    var soundLoaded by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        soundPool.setOnLoadCompleteListener { _, _, status ->
-            soundLoaded = status == 0
-        }
-    }
-
     //variable para mostrar instrucciones
     var showInstructions by remember { mutableStateOf(true) }
     var isNavigatingOut by remember { mutableStateOf(false) }
@@ -103,7 +95,7 @@ fun SnakeGame(
     val pet by userViewModel.userPet.collectAsState(initial = -1)
     val name by userViewModel.userName.collectAsState(initial = "")
     val snakeViewModel: SnakeViewModel = viewModel()
-    val bestScore by snakeViewModel.bestScore.collectAsState()
+    val bestScore by snakeViewModel.bestScore.collectAsState(initial = 0)
 
     val mascotas = listOf(
         R.drawable.mascota_1,
@@ -121,7 +113,8 @@ fun SnakeGame(
     val selectedPet = mascotas.getOrNull(pet)
     val tiposDeResiduos = listOf(
         R.drawable.pet_botella,
-        R.drawable.lata
+        R.drawable.org_manzanamordida,
+        R.drawable.pap_caja
     )
     var direccionProcesada by remember { mutableStateOf(Offset(0f, -1f)) }
     val filas = 12
@@ -179,10 +172,7 @@ fun SnakeGame(
                 if (nuevaCabeza.x.toInt() == comidaPos.x.toInt() &&
                     nuevaCabeza.y.toInt() == comidaPos.y.toInt()
                 ) {
-
-                    if (soundLoaded) {
-                        soundPool.play(soundCorrect, 1f, 1f, 1, 0, 1f)
-                    }
+                    soundPool.play(soundCorrect, 1f, 1f, 1, 0, 1f)
                     puntos += 10
                     snakeBody = listOf(nuevaCabeza) + snakeBody
                     generarComida(snakeBody)
@@ -285,7 +275,7 @@ fun SnakeGame(
                     // Vidas
                     Text(
                         text = "Récord: $bestScore",
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF01586C)
                     )
@@ -339,7 +329,7 @@ fun SnakeGame(
 
                             snakeBody.forEachIndexed { index, segment ->
                                 drawRoundRect(
-                                    color = if (index == 0) Color(0xFF8BC34A) else Color(0xFF4CAF50),
+                                    color = if (index == 0) Color(0xFF057B93) else Color(0xFF3A93A8),
                                     topLeft = Offset(
                                         segment.x * cellSize + 1.dp.toPx(),
                                         segment.y * cellSize + 1.dp.toPx()

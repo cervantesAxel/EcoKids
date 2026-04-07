@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -471,28 +472,90 @@ fun FlipCardItem(card: MemoryCard, onClick: () -> Unit) {
 @Composable
 fun VictoryDialog(score: Int, onRestart: () -> Unit, onExit: () -> Unit) {
     Dialog(onDismissRequest = {}) {
-        Box(
-            modifier = Modifier.clip(RoundedCornerShape(24.dp)).background(Color.White).size(300.dp, 350.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.papup),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().alpha(0.3f)
-            )
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+
+        BoxWithConstraints {
+            val dialogWidth = maxWidth * 1.106f
+            val dialogHeight = maxHeight * 0.5f
+
+            Box(
+                modifier = Modifier
+                    .width(dialogWidth)
+                    .height(dialogHeight)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color.White)
             ) {
-                Text("¡Felicidades!", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFF4CAF50))
-                Spacer(modifier = Modifier.height(16.dp))
-                Text("Puntaje:", fontSize = 18.sp)
-                Text("$score", fontSize = 48.sp, fontWeight = FontWeight.Black, color = Color(0xFFFF9800))
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) { Text("🔄 Volver a Jugar") }
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) { Text("Salir") }
+
+                Image(
+                    painter = painterResource(id = R.drawable.pap_up2),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.3f)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dialogWidth * 0.08f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Spacer(modifier = Modifier.height(dialogHeight * 0.05f))
+
+                    Text(
+                        "¡Felicidades!",
+                        fontSize = (dialogWidth.value * 0.1).sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF01586C)
+                    )
+
+                    Spacer(modifier = Modifier.height(dialogHeight * 0.05f))
+
+                    Text(
+                        "Puntaje:",
+                        fontSize = (dialogWidth.value * 0.05).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        "$score",
+                        fontSize = (dialogWidth.value * 0.12).sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF01586C)
+                    )
+
+                    Spacer(modifier = Modifier.height(dialogHeight * 0.08f))
+
+                    Button(
+                        onClick = onRestart,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(Icons.Default.Refresh, contentDescription = null)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Volver a Jugar")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedButton(
+                        onClick = onExit,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFFFFFF),
+                            contentColor = Color(0xFFFF9800)
+                        )
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Salir")
+                    }
+                }
             }
         }
     }

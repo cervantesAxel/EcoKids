@@ -350,7 +350,7 @@ fun ArrastrarGameScreen(onGoToGames: () -> Unit,
                         // Vidas
                         Text(
                             text = "Vidas: $vidas",
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF01586C)
                         )
