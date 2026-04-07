@@ -13,11 +13,11 @@ val Context.gamesDataStore by preferencesDataStore(name = "games_preferences")
 class GamesDataStore (private val context: Context) {
 
     //funcion para guardar puntaje
-    suspend fun saveScore (userName: String,
+    suspend fun saveScore (userId: String,
                            gameName: String,
                            score:Int){
         //llave dinámica para poder usar por usuario
-        val key = intPreferencesKey("${gameName}_score_$userName")
+        val key = intPreferencesKey("${gameName}_score_$userId")
 
         context.gamesDataStore.edit { preferences ->
             val currentScore = preferences[key] ?: 0
@@ -29,11 +29,11 @@ class GamesDataStore (private val context: Context) {
     }
 
     fun getBestScore (
-        userName: String,
+        userId: String,
         gameName: String
     ): Flow<Int>{
         //se obtiene la llave de la misma manera (dinamica)
-        val key = intPreferencesKey("${gameName}_score_$userName")
+        val key = intPreferencesKey("${gameName}_score_$userId")
 
         return context.gamesDataStore.data.map { preferences ->
             preferences[key] ?: 0
